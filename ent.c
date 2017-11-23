@@ -146,9 +146,12 @@ char* lookup(char* ds,size_t ofs,const char* t) {
   return NULL;
 }
 
-int main() {
-  FILE* f=fopen("entities.json","r");
+int main(int argc, char *argv[]) {
+  const char* filename = "entities.json";
+  FILE* f; 
   char buf[256];
+  if(argc>1) filename=argv[1];
+  f=fopen(filename,"r");
   if (!f) return 1;
 #if 0
   puts("struct { const char* entity; const char* utf8; } codepoints[] = {");
