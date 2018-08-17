@@ -1,5 +1,7 @@
 project(libowfat C)
 
+set(LIBOWFAT_VERSION 1.0.0)
+
 include(CheckFunctionExists)
 include(CheckIncludeFile)
 include(CheckLibraryExists)
@@ -212,9 +214,19 @@ file(GLOB SOURCES array/*.c buffer/*.c byte/*.c case/*.c cdb/*.c critbit/*.c dns
 set(BUILD_SHARED_LIBS ON)
 
 add_library(owfat ${SOURCES})
+set_target_properties(owfat PROPERTIES
+  SOVERSION "${LIBOWFAT_VERSION}"
+)
 
 write_have_h(ALLOCA "#include <stdlib.h>
 #include <alloca.h>
 #include <malloc.h>")
 
-install_targets(lib   RUNTIME_DIRECTORY bin owfat)
+
+install(TARGETS owfat 
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+
