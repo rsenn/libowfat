@@ -216,3 +216,5 @@ add_library(owfat ${SOURCES})
 write_have_h(ALLOCA "#include <stdlib.h>
 #include <alloca.h>
 #include <malloc.h>")
+
+install_targets(lib   RUNTIME_DIRECTORY bin owfat)
