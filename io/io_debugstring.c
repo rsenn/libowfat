@@ -10,7 +10,7 @@
 #if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
   #define DELTA_EPOCH_IN_MICROSECS  11644473600000000Ui64
 #else
-  #define DELTA_EPOCH_IN_MICROSECS  11644473600000000ULL
+  #define DELTA_EPOCH_IN_MICROSECS  (unsigned __int64)11644473600000000
 #endif
 
 #if defined(_MSC_VER) || defined(__BORLANDC__)
@@ -84,7 +84,7 @@ unsigned int io_debugstring(int64 s,char* buf,unsigned int bufsize) {
   i+=fmt_str(buf+i,": ");
   if (bufsize-i<100) return 0;
   i+=fmt_str(buf+i,"timeout ");
-  i+=fmt_long(buf+i,e->timeout.sec.x-4611686018427387914ULL-tv.tv_sec);
+  i+=fmt_long(buf+i,e->timeout.sec.x-(unsigned __int64)4611686018427387914-tv.tv_sec);
   i+=fmt_str(buf+i,".");
   i+=fmt_ulong(buf+i,e->timeout.nano);
   i+=fmt_str(buf+i," ");

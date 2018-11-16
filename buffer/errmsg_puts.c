@@ -4,11 +4,11 @@
 
 #if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 
-void errmsg_puts(int fd,const char* s) {
+ssize_t errmsg_puts(int fd,const char* s) {
   return write(fd,s,str_len(s));
 }
 
-void errmsg_flush(int fd) {
+ssize_t errmsg_flush(int fd) {
   return 0;
 }
 
@@ -19,13 +19,13 @@ enum { COUNT=25 };
 static struct iovec x[COUNT];
 static int l;
 
-void errmsg_puts(int fd,const char* s) {
+ssize_t errmsg_puts(int fd,const char* s) {
   x[l].iov_base=(char*)s;
   x[l].iov_len=str_len(s);
   if (++l==COUNT) errmsg_flush(fd);
 }
 
-void errmsg_flush(int fd) {
+ssize_t errmsg_flush(int fd) {
   int n=l;
   l=0;
   if (n) writev(fd,x,n);

@@ -5,7 +5,7 @@
 /* for size_t: */
 #include <stddef.h>
 /* for uint32_t: */
-#include <stdint.h>
+#include <inttypes.h>
 /* for time_t: */
 #include <sys/types.h>
 /* for struct timespec: */
@@ -13,6 +13,10 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+#if !defined(__int64) && (defined(__CYGWIN__) || defined(__MSYS__))
+#define __int64 long long int
 #endif
 
 #ifndef __pure__
@@ -59,10 +63,12 @@ size_t scan_8longn(const char *src,size_t n,unsigned long *dest);
 size_t scan_long(const char *src,signed long *dest);
 size_t scan_longn(const char *src,size_t n,signed long *dest);
 
-size_t scan_longlong(const char *src,signed long long *dest);
-size_t scan_ulonglong(const char *src,unsigned long long *dest);
-size_t scan_xlonglong(const char *src,unsigned long long *dest);
-size_t scan_8longlong(const char *src,unsigned long long *dest);
+#ifndef __BORLANDC__
+size_t scan_longlong(const char *src,signed __int64 *dest);
+size_t scan_ulonglong(const char *src,unsigned __int64 *dest);
+size_t scan_xlonglong(const char *src,unsigned __int64 *dest);
+size_t scan_8longlong(const char *src,unsigned __int64 *dest);
+#endif
 
 size_t scan_uint(const char *src,unsigned int *dest);
 size_t scan_xint(const char *src,unsigned int *dest);
@@ -111,8 +117,11 @@ size_t scan_iso8601(const char* in,struct timespec* t) __pure__;
 
 /* some variable length encodings for integers */
 size_t scan_utf8(const char* in,size_t len,uint32_t* n) __pure__;
-size_t scan_asn1derlength(const char* in,size_t len,unsigned long long* n) __pure__;
-size_t scan_asn1dertag(const char* in,size_t len,unsigned long long* n) __pure__;
+
+#ifndef __BORLANDC__
+size_t scan_asn1derlength(const char* in,size_t len,unsigned __int64* n) __pure__;
+size_t scan_asn1dertag(const char* in,size_t len,unsigned __int64* n) __pure__;
+#endif
 
 /* Google protocol buffers */
 /* A protocol buffer is a sequence of (tag,value).
@@ -121,13 +130,18 @@ size_t scan_asn1dertag(const char* in,size_t len,unsigned long long* n) __pure__
  *   0, double type 1, strings type 2 and floats type 5. However, you
  *   have to check this yourself.
  */ 
-size_t scan_varint(const char* in,size_t len, unsigned long long* n) __pure__;	/* internal */
+#ifndef __BORLANDC__
+size_t scan_varint(const char* in,size_t len, unsigned __int64* n) __pure__;	/* internal */
+#endif
+
 size_t scan_pb_tag(const char* in,size_t len, size_t* fieldno,unsigned char* type) __pure__;
 
 /* Then, depending on the field number, validate the type and call the
  * corresponding of these functions to parse the value */
-size_t scan_pb_type0_int(const char* in,size_t len,unsigned long long* l) __pure__;
-size_t scan_pb_type0_sint(const char* in,size_t len,signed long long* l) __pure__;
+#ifndef __BORLANDC__
+size_t scan_pb_type0_int(const char* in,size_t len,unsigned __int64* l) __pure__;
+size_t scan_pb_type0_sint(const char* in,size_t len,signed __int64* l) __pure__;
+#endif
 size_t scan_pb_type1_double(const char* in,size_t len,double* d) __pure__;
 size_t scan_pb_type1_fixed64(const char* in,size_t len,uint64_t* b) __pure__;
 /* NOTE: scan_pb_type2_stringlen only parses the length of the string,

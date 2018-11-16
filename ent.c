@@ -1,8 +1,9 @@
+#include "scan.h"
+
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
-#include "scan.h"
 #include <assert.h>
 
 #include "scan/scan_ulong.c"

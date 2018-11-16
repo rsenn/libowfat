@@ -1,11 +1,11 @@
 #include "../scan.h"
 
-size_t scan_ulonglong(const char *src,unsigned long long *dest) {
+size_t scan_ulonglong(const char *src,unsigned __int64 *dest) {
   register const char *tmp=src;
-  register unsigned long long l=0;
+  register unsigned __int64 l=0;
   register unsigned char c;
   while ((c=(unsigned char)(*tmp-'0'))<10) {
-    unsigned long long n;
+    unsigned __int64 n;
     /* division is very slow on most architectures */
     n=l<<3; if ((n>>3)!=l) break;
     if (n+(l<<1) < n) break;

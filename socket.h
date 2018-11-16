@@ -115,6 +115,8 @@ ssize_t socket_fastopen_connect6(int s,const char* ip,uint16 port,uint32 scope_i
 #if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <ws2tcpip.h>
 
+typedef int socklen_t;
+
 #ifndef EWOULDBLOCK
 #define EWOULDBLOCK WSAEWOULDBLOCK
 #define EINPROGRESS WSAEINPROGRESS

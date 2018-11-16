@@ -28,7 +28,7 @@ windoze_socketpair(SOCKET socks[2], int make_overlapped) {
   } a;
   SOCKET listener;
   int e;
-  socklen_t addrlen = sizeof(a.inaddr);
+  int addrlen = sizeof(a.inaddr);
   DWORD flags = (make_overlapped ? WSA_FLAG_OVERLAPPED : 0);
   int reuse = 1;
 
@@ -48,7 +48,7 @@ windoze_socketpair(SOCKET socks[2], int make_overlapped) {
   a.inaddr.sin_port = 0;
 
   for(;;) {
-    if(setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, (char*)&reuse, (socklen_t)sizeof(reuse)) == -1)
+    if(setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, (char*)&reuse, sizeof(reuse)) == -1)
       break;
     if(bind(listener, &a.addr, sizeof(a.inaddr)) == SOCKET_ERROR)
       break;

@@ -10,6 +10,7 @@ include(CheckPrototypeDefinition)
 include(CheckSymbolExists)
 include(CheckStructHasMember)
 include(CheckTypeSize)
+include(CheckCCompilerFlag)
 
 # exec_program("${CMAKE_C_COMPILER}"
 #   ARGS "-dumpmachine"
@@ -17,16 +18,35 @@ include(CheckTypeSize)
 #   RETURN_VALUE CC_RETVAL)
 # message("Output: ${CC_OUTPUT}")
 # 
-check_symbol_exists(__MSYS__ "" MSYS)
-check_symbol_exists(__CYGWIN__ "" CYGWIN)
-check_symbol_exists(__MINGW32__ "" MINGW32)
-check_symbol_exists(__MINGW64__ "" MINGW64)
-check_symbol_exists(__BORLANDC__ "" BORLANDC)
-#check_symbol_exists(_MSC_VER "" MSVC)
+if(NOT TCC)
+  check_symbol_exists(__MINGW32__ "" MINGW32)
+  if(NOT MINGW32)
+    check_symbol_exists(__MINGW64__ "" MINGW64)
+    if(NOT MINGW64)
+    check_symbol_exists(__BORLANDC__ "" BORLANDC)
+    if(NOT BORLANDC)
+      check_symbol_exists(__LCC__ "" LCC)
+    endif(NOT BORLANDC)
+    endif(NOT MINGW64)
+  endif(NOT MINGW32)
+endif(NOT TCC)
 
 if(MINGW32 OR MINGW64)
   set(MINGW TRUE)
+  set(MSYS FALSE)
+  set(CYGWIN FALSE)
+else(MINGW32 OR MINGW64)
+  check_symbol_exists(__MSYS__ "" MSYS)
+  if(NOT MSYS) 
+    check_symbol_exists(__CYGWIN__ "" CYGWIN)
+  endif(NOT MSYS)
+endif(MINGW32 OR MINGW64)
+
+if(MINGW OR BORLANDC OR TCC OR LCC OR MSVC)
+  set(MSYS FALSE)
+  set(CYGWIN FALSE)
 endif()
+#check_symbol_exists(_MSC_VER "" MSVC)
 
 function(sizeof_type TYPE VAR)
   check_type_size("${TYPE}" "${VAR}")
@@ -76,22 +96,34 @@ if(NOT HAVE_INTTYPES_H)
   list(APPEND CMAKE_REQUIRED_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/msvc/inttypes")
   set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/msvc/inttypes")
   set(INTTYPES_CFLAGS "${INTTYPES_CFLAGS} -I../../../../msvc/inttypes -Imsvc/inttypes")
-endif()
 
-if(MSVC)
   if(NOT HAVE_STDINT_H)
     include_directories("${CMAKE_CURRENT_SOURCE_DIR}/msvc/stdint")
     list(APPEND CMAKE_REQUIRED_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/msvc/stdint")
     set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS}  -I${CMAKE_CURRENT_SOURCE_DIR}/msvc/stdint")
     set(INTTYPES_CFLAGS "${INTTYPES_CFLAGS} -I../../../../msvc/stdint -Imsvc/stdint")
   endif()
-  set(INLINE_CFLAGS "-Dinline=__inline")
 endif()
 
 if(BORLANDC)
-set(INLINE_CFLAGS "-Dinline=__inline")
+  check_c_compiler_flag(-An HAVE_BCC_C99_FLAG)
+  if(HAVE_BCC_C99_FLAG)
+    add_definitions(-An)
+  endif()
+  check_c_compiler_flag(-q HAVE_BCC_Q_FLAG)
+  if(HAVE_BCC_Q_FLAG)
+    add_definitions(-q)
+  endif()
 endif()
 
+if(MSVC)
+  set(INLINE_CFLAGS "-Dinline=__inline")
+endif()
+
+#if(BORLANDC)
+#set(INLINE_CFLAGS "-Dinline=__inline")
+#endif()
+#
 if(INLINE_CFLAGS)
   add_definitions("${INLINE_CFLAGS}")
 endif()
@@ -318,14 +350,21 @@ foreach(H iopause select entities)
 endforeach()
 
 
-file(GLOB SOURCES array/*.c buffer/*.c byte/*.c case/*.c cdb/*.c critbit/*.c dns/*.c fmt/*.c io/*.c mmap/*.c mult/*.c open/*.c scan/*.c socket/*.c str/*.c stralloc/*.c tai/*.c taia/*.c textcode/*.c uint/*.c unix/*.c)
+file(GLOB SOURCES array/array_*.c array/iarray_*.c buffer/buffer_*.c buffer/errmsg_*.c byte/byte_*.c case/case_*.c cdb/*.c critbit/*.c dns/*.c fmt/fmt_*.c io/io_*.c mmap/mmap_*.c mult/*.c open/*.c open/open_*.c scan/scan_*.c socket/*.c str/str_*.c stralloc/stralloc_*.c tai/tai_*.c taia/taia_*.c textcode/*.c uint/uint16_*.c uint/uint32_*.c uint/uint64_*.c unix/*.c unix/ndelay_*.c)
 
 set(BUILD_SHARED_LIBS ON)
 
-add_library(libowfat SHARED ${SOURCES})
+add_library(libowfat-shared SHARED ${SOURCES})
 add_library(libowfat-static STATIC ${SOURCES})
 
+set(DLLPREFIX "${CMAKE_SHARED_LIBRARY_PREFIX}")
+set(DLLSUFFIX "${CMAKE_SHARED_LIBRARY_SUFFIX}")
+set(LIBPREFIX "${CMAKE_STATIC_LIBRARY_PREFIX}")
+set(LIBSUFFIX "${CMAKE_STATIC_LIBRARY_SUFFIX}")
+set(IMPPREFIX "${CMAKE_IMPORT_LIBRARY_PREFIX}")
+set(IMPSUFFIX "${CMAKE_IMPORT_LIBRARY_SUFFIX}")
 set(DLLVERSION "1")
+
 if(MSYS)
   set(DLLPREFIX "msys-")
   set(DLLSUFFIX "-${DLLVERSION}.dll")
@@ -339,13 +378,13 @@ if(CYGWIN)
   set(LIBSUFFIX ".a")
 endif(CYGWIN)
 
-set_target_properties(libowfat PROPERTIES
+set_target_properties(libowfat-shared PROPERTIES
   OUTPUT_NAME "owfat"
   PREFIX "${DLLPREFIX}"
   SUFFIX "${DLLSUFFIX}"
   DLLVERSION "${DLLVERSION}"
-  IMPORT_PREFIX "${LIBPREFIX}"
-  IMPORT_SUFFIX ".dll${LIBSUFFIX}"
+  IMPORT_PREFIX "${IMPPREFIX}"
+  IMPORT_SUFFIX ".dll${IMPSUFFIX}"
   )
 set_target_properties(libowfat-static PROPERTIES
   OUTPUT_NAME "owfat"
@@ -358,7 +397,7 @@ write_have_h(ALLOCA "#include <stdlib.h>
 #include <malloc.h>")
 
 
-install(TARGETS libowfat libowfat-static
+install(TARGETS libowfat-shared libowfat-static
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin

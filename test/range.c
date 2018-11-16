@@ -27,10 +27,10 @@ void check_minmax() {
   assert(__MAX(unsigned long)==ULONG_MAX);
 
 #ifdef LLONG_MIN
-  assert(__MIN(long long)==LLONG_MIN);
-  assert(__MAX(long long)==LLONG_MAX);
-  assert(__MIN(unsigned long long)==0);
-  assert(__MAX(unsigned long long)==ULLONG_MAX);
+  assert(__MIN(__int64)==LLONG_MIN);
+  assert(__MAX(__int64)==LLONG_MAX);
+  assert(__MIN(unsigned __int64)==0);
+  assert(__MAX(unsigned __int64)==ULLONG_MAX);
 #endif
 
   assert(__MIN(int32_t)==(int32_t)0x80000000);
@@ -160,10 +160,10 @@ void check_intof() {
 
     /* now let's see what happens if the addition has a wider data
      * type than the destionation */
-    a=0; assert(add_of(a,0x100000000ll,-0x80000000ll)==1);
-    a=0; assert(add_of(a,0x100000000ll,-0x80000001ll)==0 && a==0x7fffffff);
-    a=0; assert(add_of(a,0x100000000ll,-10)==1);
-    a=0; assert(add_of(a,-0x90000000ll,0x10000000)==0 && a==0x80000000);
+    a=0; assert(add_of(a,(__int64)0x100000000,-0x80000000ll)==1);
+    a=0; assert(add_of(a,(__int64)0x100000000,-0x80000001ll)==0 && a==0x7fffffff);
+    a=0; assert(add_of(a,(__int64)0x100000000,-10)==1);
+    a=0; assert(add_of(a,(__int64)-0x90000000,0x10000000)==0 && a==0x80000000);
 
     /* what if we add two ints, the result does not overflow but is
      * still negative, but we assign it to an unsigned int? */
@@ -183,9 +183,9 @@ void check_intof() {
 
     /* now let's see what happens if the addition has a wider data
      * type than the destionation */
-    a=0; assert(add_of(a,0x100000000ll,-5)==0 && a==4294967291);
-    a=0; assert(add_of(a,-0x100000010ll,5)==1);
-    a=0; assert(add_of(a,0x100000010ll,-5)==1);
+    a=0; assert(add_of(a,(__int64)0x100000000,-5)==0 && a==4294967291);
+    a=0; assert(add_of(a,(__int64)-0x100000010,5)==1);
+    a=0; assert(add_of(a,(__int64)0x100000010,-5)==1);
 
     /* what if we add two ints, the result does not overflow but is
      * still negative, but we assign it to an unsigned int? */
@@ -203,7 +203,7 @@ void check_intof() {
   }
 
   {
-    unsigned long long a;
+    unsigned __int64 a;
     a=0; assert(add_of(a,0xfffffff0ul,0x10)==0 && a==0x100000000);
   }
 

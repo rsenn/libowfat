@@ -1,4 +1,5 @@
 #include "../io_internal.h"
+#include "../buffer.h"
 #include "../iob.h"
 #include <sys/types.h>
 #if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
@@ -35,7 +36,7 @@ int64 io_mmapwritefile(int64 out,int64 in,uint64 off,uint64 bytes,io_write_callb
 	munmap(e->mmapped,e->maplen);
 #endif
       }
-      e->mapofs=off&0xffffffffffff0000ull;
+      e->mapofs=off&(unsigned __int64)0xffffffffffff0000;
       if (e->mapofs+0x10000>off+bytes)
 	e->maplen=off+bytes-e->mapofs;
       else

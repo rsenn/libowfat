@@ -1,9 +1,8 @@
 #define _GNU_SOURCE
 #undef __deprecated__
-#include "../scan.h"
 #include "../byte.h"
 #include "../case.h"
-//#include <time.h>
+#include <time.h>
 #include <stdlib.h>
 
 #if (defined(_MSC_VER) && _MSC_VER <= 1500) || defined(__BORLANDC__)
@@ -22,6 +21,7 @@ struct timespec {
 };
 #endif
 #endif
+#include "../scan.h"
 
 /* "2014-05-27T19:22:16Z" */
 size_t scan_iso8601(const char* in,struct timespec* t) {

@@ -26,11 +26,11 @@ void zap2() { size_t i; for (i=0; i<sizeof(buf); ++i) buf[i]=i; }
 int main() {
   uint32_t x;
 
-  unsigned long long ull;
+  unsigned __int64 ull;
   unsigned long ul;
   unsigned int ui;
   unsigned short us;
-  signed long long ll;
+  signed __int64 ll;
   signed long l;
   signed int i;
   signed short s;
@@ -68,14 +68,14 @@ int main() {
   zap(); assert(fmt_xlong(buf,0x12345)==5 && byte_equal(buf,6,"12345_"));
   assert(fmt_8long(NULL,012345)==5);
   zap(); assert(fmt_8long(buf,012345)==5 && byte_equal(buf,6,"12345_"));
-  assert(fmt_longlong(NULL,12345678900ll)==11);
-  zap(); assert(fmt_longlong(buf,12345678900ll)==11 && byte_equal(buf,12,"12345678900_"));
-  assert(fmt_longlong(NULL,-12345678900ll)==12);
-  zap(); assert(fmt_longlong(buf,-12345678900ll)==12 && byte_equal(buf,13,"-12345678900_"));
-  assert(fmt_xlonglong(NULL,12345678900ll)==9);
-  zap(); assert(fmt_xlonglong(buf,12345678900ll)==9 && byte_equal(buf,10,"2dfdc1c34_"));
-  assert(fmt_ulonglong(NULL,12345678900ull)==11);
-  zap(); assert(fmt_ulonglong(buf,12345678900ull)==11 && byte_equal(buf,12,"12345678900_"));
+  assert(fmt_longlong(NULL,(__int64)12345678900)==11);
+  zap(); assert(fmt_longlong(buf,(__int64)12345678900)==11 && byte_equal(buf,12,"12345678900_"));
+  assert(fmt_longlong(NULL,(__int64)-12345678900)==12);
+  zap(); assert(fmt_longlong(buf,(__int64)-12345678900)==12 && byte_equal(buf,13,"-12345678900_"));
+  assert(fmt_xlonglong(NULL,(__int64)12345678900)==9);
+  zap(); assert(fmt_xlonglong(buf,(__int64)12345678900)==9 && byte_equal(buf,10,"2dfdc1c34_"));
+  assert(fmt_ulonglong(NULL,(unsigned __int64)12345678900)==11);
+  zap(); assert(fmt_ulonglong(buf,(unsigned __int64)12345678900)==11 && byte_equal(buf,12,"12345678900_"));
 
   assert(fmt_ulong0(NULL,12345,7)==7);
   zap(); assert(fmt_ulong0(buf,12345,7)==7 && byte_equal(buf,8,"0012345_"));
@@ -218,7 +218,7 @@ int main() {
 
   } else {
     assert(scan_ulong("18446744073709551615",&ul)==20 && ul==0xffffffffffffffffull);
-    assert(scan_ulong("18446744073709551616",&ul)==19 && ul==1844674407370955161ull);
+    assert(scan_ulong("18446744073709551616",&ul)==19 && ul==(unsigned __int64)1844674407370955161);
     assert(scan_xlong("ffffffffffffffff",&ul)==16 && ul==0xffffffffffffffffull);
     assert(scan_xlong("ffffffffffffffff0",&ul)==16 && ul==0xffffffffffffffffull);
     assert(scan_8long("1777777777777777777777",&ul)==22 && ul==0xffffffffffffffffull);
@@ -228,10 +228,10 @@ int main() {
     assert(scan_long("09223372036854775807",&l)==20 && l==0x7fffffffffffffffll);
     assert(scan_long("092233720368547758070",&l)==20 && l==0x7fffffffffffffffll);
     assert(scan_long("+9223372036854775807",&l)==20 && l==0x7fffffffffffffffll);
-    assert(scan_long("+9223372036854775808",&l)==19 && l==922337203685477580ll);
-    assert(scan_long("-9223372036854775807",&l)==20 && l==-9223372036854775807ll);
-    assert(scan_long("-9223372036854775808",&l)==20 && l==(signed long long)0x8000000000000000ull);
-    assert(scan_long("-9223372036854775809",&l)==19 && l==-922337203685477580ll);
+    assert(scan_long("+9223372036854775808",&l)==19 && l==(__int64)922337203685477580);
+    assert(scan_long("-9223372036854775807",&l)==20 && l==(__int64)-9223372036854775807);
+    assert(scan_long("-9223372036854775808",&l)==20 && l==(signed __int64)(unsigned __int64)0x8000000000000000);
+    assert(scan_long("-9223372036854775809",&l)==19 && l==(__int64)-922337203685477580);
 
   }
   assert(scan_uint("4294967295",&ui)==10 && ui==0xffffffff);
@@ -268,7 +268,7 @@ int main() {
   assert(scan_short("-032769",&s)==6 && s==-3276);
 
   assert(scan_ulonglong("18446744073709551615",&ull)==20 && ull==0xffffffffffffffffull);
-  assert(scan_ulonglong("18446744073709551616",&ull)==19 && ull==1844674407370955161ull);
+  assert(scan_ulonglong("18446744073709551616",&ull)==19 && ull==(unsigned __int64)1844674407370955161);
   assert(scan_xlonglong("ffffffffffffffff",&ull)==16 && ull==0xffffffffffffffffull);
   assert(scan_xlonglong("ffffffffffffffff0",&ull)==16 && ull==0xffffffffffffffffull);
   assert(scan_8longlong("1777777777777777777777",&ull)==22 && ull==0xffffffffffffffffull);
@@ -278,10 +278,10 @@ int main() {
   assert(scan_longlong("09223372036854775807",&ll)==20 && ll==0x7fffffffffffffffll);
   assert(scan_longlong("092233720368547758070",&ll)==20 && ll==0x7fffffffffffffffll);
   assert(scan_longlong("+9223372036854775807",&ll)==20 && ll==0x7fffffffffffffffll);
-  assert(scan_longlong("+9223372036854775808",&ll)==19 && ll==922337203685477580ll);
-  assert(scan_longlong("-9223372036854775807",&ll)==20 && ll==-9223372036854775807ll);
-  assert(scan_longlong("-9223372036854775808",&ll)==20 && ll==(signed long long)0x8000000000000000ull);
-  assert(scan_longlong("-9223372036854775809",&ll)==19 && ll==-922337203685477580ll);
+  assert(scan_longlong("+9223372036854775808",&ll)==19 && ll==(__int64)922337203685477580);
+  assert(scan_longlong("-9223372036854775807",&ll)==20 && ll==(__int64)-9223372036854775807);
+  assert(scan_longlong("-9223372036854775808",&ll)==20 && ll==(signed __int64)(unsigned __int64)0x8000000000000000);
+  assert(scan_longlong("-9223372036854775809",&ll)==19 && ll==(__int64)-922337203685477580);
 
   zap2();
 
@@ -312,14 +312,14 @@ int main() {
   assert(uint32_read_big(buf+2)==0x02030405);
   assert(uint32_read_big(buf+3)==0x03040506);
 
-  assert(uint64_read(buf)==0x0706050403020100ull);
-  assert(uint64_read(buf+1)==0x0807060504030201ull);
-  assert(uint64_read(buf+2)==0x0908070605040302ull);
+  assert(uint64_read(buf)==(unsigned __int64)0x0706050403020100);
+  assert(uint64_read(buf+1)==(unsigned __int64)0x0807060504030201);
+  assert(uint64_read(buf+2)==(unsigned __int64)0x0908070605040302);
   assert(uint64_read(buf+3)==0x0a09080706050403ull);
 
-  assert(uint64_read_big(buf)==0x0001020304050607ull);
-  assert(uint64_read_big(buf+1)==0x0102030405060708ull);
-  assert(uint64_read_big(buf+2)==0x0203040506070809ull);
+  assert(uint64_read_big(buf)==(unsigned __int64)0x0001020304050607);
+  assert(uint64_read_big(buf+1)==(unsigned __int64)0x0102030405060708);
+  assert(uint64_read_big(buf+2)==(unsigned __int64)0x0203040506070809);
   assert(uint64_read_big(buf+3)==0x030405060708090aull);
 
   {

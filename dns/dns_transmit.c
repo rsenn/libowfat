@@ -1,14 +1,11 @@
-#include <sys/types.h>
-#ifdef WIN32
-#include <winsock2.h>
-#else
-#include <sys/socket.h>
-#endif
 #if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
+#include <winsock2.h>
 #include <io.h>
 #else
 #include <unistd.h>
+#include <sys/socket.h>
 #endif
+#include <sys/types.h>
 #include <stdlib.h>
 #include "../socket.h"
 #include <errno.h>

@@ -364,7 +364,7 @@ dopoll:
     LPOVERLAPPED o;
     if (first_readable!=-1 || first_writeable!=-1) {
       fprintf(stderr,"io_waituntil2() returning immediately because first_readable(%p) or first_writeable(%p) are set\n",first_readable,first_writeable);
-      return;
+      return -1;
     }
     fprintf(stderr,"Calling GetQueuedCompletionStatus %p...",io_comport);
     if (GetQueuedCompletionStatus(io_comport,&numberofbytes,&x,&o,milliseconds==-1?INFINITE:milliseconds)) {
