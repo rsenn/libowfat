@@ -1,7 +1,9 @@
+set(CMAKE_LEGACY_CYGWIN_WIN32 0)
+cmake_minimum_required(VERSION 2.8)
+
 project(libowfat C)
 
 set(LIBOWFAT_VERSION 1.0.0)
-cmake_minimum_required(VERSION 2.8)
 
 include(CheckFunctionExists)
 include(CheckIncludeFile)
@@ -18,7 +20,7 @@ include(CheckCCompilerFlag)
 #   RETURN_VALUE CC_RETVAL)
 # message("Output: ${CC_OUTPUT}")
 # 
-if(NOT TCC)
+if(NOT TCC AND NOT CYGWIN AND NOT UNIX)
   check_symbol_exists(__MINGW32__ "" MINGW32)
   if(NOT MINGW32)
     check_symbol_exists(__MINGW64__ "" MINGW64)
@@ -29,7 +31,7 @@ if(NOT TCC)
     endif(NOT BORLANDC)
     endif(NOT MINGW64)
   endif(NOT MINGW32)
-endif(NOT TCC)
+endif(NOT TCC AND NOT CYGWIN AND NOT UNIX)
 
 if(MINGW32 OR MINGW64)
   set(MINGW TRUE)
@@ -43,6 +45,7 @@ else(MINGW32 OR MINGW64)
 endif(MINGW32 OR MINGW64)
 
 if(MINGW OR BORLANDC OR TCC OR LCC OR MSVC)
+  set(WINDOWS TRUE)
   set(MSYS FALSE)
   set(CYGWIN FALSE)
 endif()
@@ -81,6 +84,14 @@ endif()
 if(MSYS OR CYGWIN OR MINGW OR MSVC OR WIN32 OR WIN64)
 set(WINDOWS TRUE)
 endif()
+
+  set(CompilerFlags CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE CMAKE_C_FLAGS_RELWITHDEBINFO CMAKE_C_FLAGS_MINSIZEREL)
+  foreach(CompilerFlag ${CompilerFlags})
+    string(REPLACE "/MD" "/MT" FLAG "${${CompilerFlag}}")
+    unset(${CompilerFlag} CACHE)
+    set(${CompilerFlag} "${FLAG}" CACHE STRING "Compiler flags ${CompilerFlag}")
+    message("${CompilerFlag}: ${${CompilerFlag}}")
+  endforeach()
 
 if(WINDOWS)
   link_libraries(ws2_32 wsock32)
@@ -168,30 +179,34 @@ write_have_h(ALLOCA "#include <alloca.h>" "")
 
 ### Checks for bsdsf (trybsdsf.c)
 
-#check_include_file(netinet/in.h NETINET_IN_H)
-check_include_file(netinet/tcp.h NETINET_TCP_H)
-#check_include_file(sys/socket.h SYS_SOCKET_H)
-#check_include_file(sys/types.h SYS_TYPES_H)
-#check_include_file(sys/uio.h SYS_UIO_H)
+if(NOT WINDOWS)
+  #check_include_file(netinet/in.h NETINET_IN_H)
+  check_include_file(netinet/tcp.h NETINET_TCP_H)
+  #check_include_file(sys/socket.h SYS_SOCKET_H)
+  #check_include_file(sys/types.h SYS_TYPES_H)
+  #check_include_file(sys/uio.h SYS_UIO_H)
 
-check_function_exists(sendfile HAVE_BSDSF)
-
+  check_function_exists(sendfile HAVE_BSDSF)
+endif(NOT WINDOWS)
 write_have_h(BSDSF)
 
 ### Checks for devpoll (trydevpoll.c)
 
-check_include_file(sys/devpoll.h SYS_DEVPOLL_H)
-check_include_file(sys/errno.h SYS_ERRNO_H)
+if(NOT WINDOWS)
+  check_include_file(sys/devpoll.h SYS_DEVPOLL_H)
+  check_include_file(sys/errno.h SYS_ERRNO_H)
 
-check_symbol_exists(DP_POLL "sys/devpoll.h;sys/ioctl.h" HAVE_DEVPOLL)
-
+  check_symbol_exists(DP_POLL "sys/devpoll.h;sys/ioctl.h" HAVE_DEVPOLL)
+endif(NOT WINDOWS)
 write_have_h(DEVPOLL)
 
 ### Checks for epoll (tryepoll.c)
-check_include_file(sys/epoll.h SYS_EPOLL_H)
+if(NOT WINDOWS)
+  check_include_file(sys/epoll.h SYS_EPOLL_H)
 
-check_function_exists(epoll_wait HAVE_EPOLL)
+  check_function_exists(epoll_wait HAVE_EPOLL)
 
+endif(NOT WINDOWS)
 write_have_h(EPOLL "#define HAVE_EPOLL 1")
 
 ### Checks for inline (tryinline.c)
@@ -208,22 +223,25 @@ check_symbol_exists(PF_INET6 "netinet/in.h;sys/socket.h;sys/types.h" HAVE_IP6)
 write_have_h(IP6 "#define LIBC_HAS_IP6")
 
 ### Checks for kqueue (trykqueue.c)
-check_include_file(sys/event.h SYS_EVENT_H)
-#check_include_file(sys/time.h SYS_TIME_H)
-#check_include_file(sys/types.h SYS_TYPES_H)
+if(NOT WINDOWS)
+  check_include_file(sys/event.h SYS_EVENT_H)
+  #check_include_file(sys/time.h SYS_TIME_H)
+  #check_include_file(sys/types.h SYS_TYPES_H)
 
-check_function_exists(kevent HAVE_KQUEUE)
-
+  check_function_exists(kevent HAVE_KQUEUE)
+endif(NOT WINDOWS)
 write_have_h(KQUEUE)
 
 ### Checks for n2i (tryn2i.c)
-check_include_file(net/if.h NET_IF_H)
-#check_include_file(sys/socket.h SYS_SOCKET_H)
-#check_include_file(sys/types.h SYS_TYPES_H)
+if(NOT WINDOWS)
+  check_include_file(net/if.h NET_IF_H)
+  #check_include_file(sys/socket.h SYS_SOCKET_H)
+  #check_include_file(sys/types.h SYS_TYPES_H)
 
-check_function_exists(if_indextoname HAVE_N2I)
-
+  check_function_exists(if_indextoname HAVE_N2I)
+endif(NOT WINDOWS)
 write_have_h(N2I "#define HAVE_N2I")
+
 ### Checks for poll (trypoll.c)
 #check_include_file(sys/types.h SYS_TYPES_H)
 
@@ -238,20 +256,22 @@ check_struct_has_member(sockaddr_in6 sin6_scope_id "sys/types.h;netinet/in.h" HA
 write_have_h(SCOPE "#define LIBC_HAS_SCOPE_ID")
 
 ### Checks for sendfile (trysendfile.c)
-check_include_file(linux/unistd.h LINUX_UNISTD_H)
-check_include_file(sys/sendfile.h SYS_SENDFILE_H)
-#check_include_file(sys/socket.h SYS_SOCKET_H)
-#check_include_file(sys/types.h SYS_TYPES_H)
-#check_include_file(sys/uio.h SYS_UIO_H)
-check_function_exists(sendfile HAVE_SENDFILE)
-
+if(NOT WINDOWS)
+  check_include_file(linux/unistd.h LINUX_UNISTD_H)
+  check_include_file(sys/sendfile.h SYS_SENDFILE_H)
+  #check_include_file(sys/socket.h SYS_SOCKET_H)
+  #check_include_file(sys/types.h SYS_TYPES_H)
+  #check_include_file(sys/uio.h SYS_UIO_H)
+  check_function_exists(sendfile HAVE_SENDFILE)
+endif(NOT WINDOWS)
 write_have_h(SENDFILE "#define HAVE_SENDFILE")
 
 ### Checks for sigio (trysigio.c)
-check_include_file(sys/poll.h SYS_POLL_H)
-#check_include_file(sys/types.h SYS_TYPES_H)
-check_symbol_exists(F_SETSIG "sys/types.h;fcntl.h;signal.h" HAVE_SIGIO)
-
+if(NOT WINDOWS)
+  check_include_file(sys/poll.h SYS_POLL_H)
+  #check_include_file(sys/types.h SYS_TYPES_H)
+  check_symbol_exists(F_SETSIG "sys/types.h;fcntl.h;signal.h" HAVE_SIGIO)
+endif(NOT WINDOWS)
 write_have_h(SIGIO "#define HAVE_SIGIO")
 
 ### Checks for sl (trysl.c)
@@ -354,11 +374,22 @@ file(GLOB SOURCES array/array_*.c array/iarray_*.c buffer/buffer_*.c buffer/errm
 
 set(BUILD_SHARED_LIBS ON)
 
-add_library(libowfat-shared SHARED ${SOURCES})
-add_library(libowfat-static STATIC ${SOURCES})
+option(ENABLE_SHARED "build shared library" OFF)
+option(ENABLE_STATIC "build static library" ON)
+unset(TARGETS)
 
-set(DLLPREFIX "${CMAKE_SHARED_LIBRARY_PREFIX}")
-set(DLLSUFFIX "${CMAKE_SHARED_LIBRARY_SUFFIX}")
+if(ENABLE_SHARED)
+  set(DLLPREFIX "${CMAKE_SHARED_LIBRARY_PREFIX}")
+  set(DLLSUFFIX "${CMAKE_SHARED_LIBRARY_SUFFIX}")
+
+  list(APPEND TARGETS libowfat-shared)
+  add_library(libowfat-shared SHARED ${SOURCES})
+endif(ENABLE_SHARED)
+if(ENABLE_STATIC)
+  list(APPEND TARGETS libowfat-static)
+  add_library(libowfat-static STATIC ${SOURCES})
+endif(ENABLE_STATIC)
+
 set(LIBPREFIX "${CMAKE_STATIC_LIBRARY_PREFIX}")
 set(LIBSUFFIX "${CMAKE_STATIC_LIBRARY_SUFFIX}")
 set(IMPPREFIX "${CMAKE_IMPORT_LIBRARY_PREFIX}")
@@ -377,27 +408,29 @@ if(CYGWIN)
   set(LIBPREFIX "lib")
   set(LIBSUFFIX ".a")
 endif(CYGWIN)
+if(NOT IMPPREFIX)  
+  set(IMPPREFIX "lib")
+endif(NOT IMPPREFIX)  
+if(NOT IMPSUFFIX)  
+  set(IMPSUFFIX ".dll.a")
+endif(NOT IMPSUFFIX)  
 
-set_target_properties(libowfat-shared PROPERTIES
-  OUTPUT_NAME "owfat"
-  PREFIX "${DLLPREFIX}"
-  SUFFIX "${DLLSUFFIX}"
-  DLLVERSION "${DLLVERSION}"
-  IMPORT_PREFIX "${IMPPREFIX}"
-  IMPORT_SUFFIX ".dll${IMPSUFFIX}"
-  )
-set_target_properties(libowfat-static PROPERTIES
-  OUTPUT_NAME "owfat"
-  PREFIX "${LIBPREFIX}"
-  SUFFIX "${LIBSUFFIX}"
-  )
+foreach(T ${TARGETS})
+  set_target_properties(${T} PROPERTIES
+    OUTPUT_NAME "owfat"
+    PREFIX "${DLLPREFIX}"
+    SUFFIX "${DLLSUFFIX}"
+    DLLVERSION "${DLLVERSION}"
+    IMPORT_PREFIX "${IMPPREFIX}"
+    IMPORT_SUFFIX "${IMPSUFFIX}"
+    )
+endforeach()
 
 write_have_h(ALLOCA "#include <stdlib.h>
 #include <alloca.h>
 #include <malloc.h>")
 
-
-install(TARGETS libowfat-shared libowfat-static
+install(TARGETS ${TARGETS}
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
