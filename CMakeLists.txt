@@ -134,7 +134,7 @@ write_have_h(SENDFILE "#define HAVE_SENDFILE")
 ### Checks for sigio (trysigio.c)
 check_include_file(sys/poll.h SYS_POLL_H)
 #check_include_file(sys/types.h SYS_TYPES_H)
-check_symbol_exists(SIGIO "sys/types.h;signal.h" HAVE_SIGIO)
+check_symbol_exists(F_SETSIG "sys/types.h;fcntl.h;signal.h" HAVE_SIGIO)
 
 write_have_h(SIGIO "#define HAVE_SIGIO")
 
