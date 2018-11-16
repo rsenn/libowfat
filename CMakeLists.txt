@@ -1,6 +1,7 @@
 project(libowfat C)
 
 set(LIBOWFAT_VERSION 1.0.0)
+cmake_minimum_required(VERSION 2.8)
 
 include(CheckFunctionExists)
 include(CheckIncludeFile)
@@ -9,6 +10,15 @@ include(CheckPrototypeDefinition)
 include(CheckSymbolExists)
 include(CheckStructHasMember)
 include(CheckTypeSize)
+
+# exec_program("${CMAKE_C_COMPILER}"
+#   ARGS "-dumpmachine"
+#   OUTPUT_VARIABLE CC_OUTPUT
+#   RETURN_VALUE CC_RETVAL)
+# message("Output: ${CC_OUTPUT}")
+# 
+check_symbol_exists(__MSYS__ "" MSYS)
+message("MSYS: ${MSYS}")
 
 function(write_have_h NAME)
   string(TOLOWER "${ARGV0}" HAVE_H)
@@ -168,14 +178,14 @@ check_type_size(__uint128_t HAVE_UINT128)
 
 write_have_h(UINT128 "#define HAVE_UINT128")
 
-include_directories(".")
-include_directories("${CMAKE_SOURCE_DIR}")
-include_directories("${CMAKE_BINARY_DIR}")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}")
 
 try_compile(RCOMP_ENT 
   "${CMAKE_BINARY_DIR}" "${CMAKE_SOURCE_DIR}/ent.c"
-  CMAKE_FLAGS "-DINCLUDE_DIRECTORIES=${CMAKE_BINARY_DIR}" "-DLINK_FLAGS=-static"
-  OUTPUT_VARIABLE COMPILE_ENT
+  CMAKE_FLAGS "-DINCLUDE_DIRECTORIES=${CMAKE_BINARY_DIR}"
+   "-DLINK_FLAGS=-static" 
+   "-DCOMPILE_DEFINITIONS=\"-I${CMAKE_SOURCE_DIR}\""
+     OUTPUT_VARIABLE COMPILE_ENT
   COPY_FILE "${CMAKE_BINARY_DIR}/ent")
 
 #try_run(RUN_ENT COMP_ENT 
@@ -213,20 +223,46 @@ file(GLOB SOURCES array/*.c buffer/*.c byte/*.c case/*.c cdb/*.c critbit/*.c dns
 
 set(BUILD_SHARED_LIBS ON)
 
-add_library(owfat ${SOURCES})
-set_target_properties(owfat PROPERTIES
-  SOVERSION "${LIBOWFAT_VERSION}"
-)
+add_library(libowfat SHARED ${SOURCES})
+add_library(libowfat-static STATIC ${SOURCES})
+
+set(DLLVERSION "1")
+if(MSYS)
+  set(DLLPREFIX "msys-")
+  set(DLLSUFFIX "-${DLLVERSION}.dll")
+  set(LIBPREFIX "lib")
+  set(LIBSUFFIX ".a")
+endif(MSYS)
+if(CYGWIN)
+  set(DLLPREFIX "cyg")
+  set(DLLSUFFIX "-${DLLVERSION}.dll")
+  set(LIBPREFIX "lib")
+  set(LIBSUFFIX ".a")
+endif(CYGWIN)
+
+set_target_properties(libowfat PROPERTIES
+  OUTPUT_NAME "owfat"
+  PREFIX "${DLLPREFIX}"
+  SUFFIX "${DLLSUFFIX}"
+  DLLVERSION "${DLLVERSION}"
+  )
+set_target_properties(libowfat-static PROPERTIES
+  OUTPUT_NAME "owfat"
+  PREFIX "${LIBPREFIX}"
+  SUFFIX "${LIBSUFFIX}"
+  )
 
 write_have_h(ALLOCA "#include <stdlib.h>
 #include <alloca.h>
 #include <malloc.h>")
 
 
-install(TARGETS owfat 
+install(TARGETS libowfat libowfat-static
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
 )
+set(INCLUDES buffer.h byte.h fmt.h ip4.h ip6.h mmap.h scan.h socket.h str.h uint32.h uint64.h open.h textcode.h tai.h taia.h dns.h readclose.h ndelay.h array.h io.h safemult.h iob.h cdb.h cdb_make.h rangecheck.h iarray.h va_narg.h critbit.h)
 
+install(FILES ${INCLUDES} DESTINATION include/libowfat)
 

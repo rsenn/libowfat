@@ -2,12 +2,27 @@ cfg() {
   : ${build:=`gcc -dumpmachine`}
   [ -n "$build" ] && build=${build//-pc-/-}
 
-  : ${host:=$build}
+  if [ -z "$host" ]; then
+    host=$build
+    case "$host" in
+      x86_64-w64-mingw32) host="$host" builddir=build/mingw64 prefix=/mingw64 ;;
+      i686-w64-mingw32) host="$host" builddir=build/mingw32 prefix=/mingw32 ;;
+      x86_64-pc-*) host="$host" builddir=build/${host#*-pc-}64 prefix=/usr ;;
+      i686-pc-*) host="$host" builddir=build/${host#*-pc-}32 prefix=/usr ;;
+    esac
+  fi
   : ${prefix:=/usr}
   : ${libdir:=$prefix/lib}
   [ -d "$libdir/$host" ] && libdir=$libdir/$host
- 
- : ${builddir=build/$host}
+
+  if [ -e "$TOOLCHAIN" ]; then
+    cmakebuild=$(basename "$TOOLCHAIN" .cmake)
+    cmakebuild=${cmakebuild%.toolchain}
+    cmakebuild=cmake-${cmakebuild#toolchain-}
+    : ${builddir=build/$cmakebuild}
+  else
+   : ${builddir=build/cmake-$host}
+  fi
 
   case $(uname -o) in
    # MSys|MSYS|Msys) SYSTEM="MSYS" ;;
@@ -22,7 +37,7 @@ cfg() {
   : ${generator:="Unix Makefiles"}
 
  (mkdir -p $builddir
-  relsrcdir=`realpath --relative-to "$builddir" .`
+  : ${relsrcdir=`realpath --relative-to "$builddir" .`}
   set -x
   cd $builddir
   ${CMAKE:-cmake} -Wno-dev \
@@ -36,10 +51,9 @@ cfg() {
     ${TOOLCHAIN:+-DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN"} \
     ${CC:+-DCMAKE_C_COMPILER="$CC"} \
     ${CXX:+-DCMAKE_CXX_COMPILER="$CXX"} \
-    -DCMAKE_C_FLAGS_DEBUG="-g -ggdb3" \
-    -DCMAKE_C_FLAGS_RELWITHDEBINFO="-O2 -g -ggdb3 -DNDEBUG" \
-    -DCMAKE_VERBOSE_MAKEFILE=TRUE \
-    -DBUILD_SHARED_LIBS=TRUE \
+    -DCMAKE_{C,CXX}_FLAGS_DEBUG="-g -ggdb3" \
+    -DCMAKE_{C,CXX}_FLAGS_RELWITHDEBINFO="-O2 -g -ggdb3 -DNDEBUG" \
+    ${MAKE:+-DCMAKE_MAKE_PROGRAM="$MAKE"} \
     "$@" \
     $relsrcdir 2>&1 ) |tee "${builddir##*/}.log"
 }

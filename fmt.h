@@ -202,7 +202,7 @@ size_t fmt_escapecharquotedprintableutf8(char* dest,uint32_t ch) __pure__;
 size_t fmt_escapecharc(char* dest,uint32_t ch) __pure__;
 
 /* internal functions, may be independently useful */
-char fmt_tohex(char c) __attribute__((__const__));
+char fmt_tohex(char c);
 
 #define fmt_strm(b,...) fmt_strm_internal(b,__VA_ARGS__,(char*)0)
 size_t fmt_strm_internal(char* dest,...) __pure__;

@@ -172,11 +172,7 @@ havesl.h haveinline.h iopause.h select.h havekqueue.h haveepoll.h \
 libepoll havesigio.h havebsdsf.h havesendfile.h havescope.h havedevpoll.h \
 dep libsocket havealloca.h haveuint128.h entities.h ent
 
-INCLUDES=buffer.h byte.h fmt.h ip4.h ip6.h mmap.h scan.h socket.h str.h stralloc.h \
-uint16.h uint32.h uint64.h open.h textcode.h tai.h taia.h dns.h iopause.h case.h \
-openreadclose.h readclose.h ndelay.h array.h io.h safemult.h iob.h havealloca.h \
-errmsg.h cdb.h cdb_make.h rangecheck.h iarray.h va_narg.h isset.h \
-compiletimeassert.h critbit.h
+INCLUDES = buffer.h byte.h fmt.h ip4.h ip6.h mmap.h scan.h socket.h str.h stralloc.huint16.h uint32.h uint64.h open.h textcode.h tai.h taia.h dns.h iopause.h case.hopenreadclose.h readclose.h ndelay.h array.h io.h safemult.h iob.h havealloca.herrmsg.h cdb.h cdb_make.h rangecheck.h iarray.h va_narg.h isset.hcompiletimeassert.h critbit.h
 
 install-inc:
 	install -d $(INCLUDEDIR)
