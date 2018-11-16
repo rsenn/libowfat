@@ -60,8 +60,11 @@ int buffer_putsflush(buffer* b,const char* x);
 
 int buffer_putm_internal(buffer*b,...);
 int buffer_putm_internal_flush(buffer*b,...);
+
+#ifndef __BORLANDC__
 #define buffer_putm(b,...) buffer_putm_internal(b,__VA_ARGS__,(char*)0)
 #define buffer_putmflush(b,...) buffer_putm_internal_flush(b,__VA_ARGS__,(char*)0)
+#endif
 
 int buffer_putspace(buffer* b);
 int buffer_putnlflush(buffer* b); /* put \n and flush */

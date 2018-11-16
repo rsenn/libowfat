@@ -2,7 +2,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <io.h>
 #else
 #include <unistd.h>
@@ -10,7 +10,7 @@
 #include <errno.h>
 #include "../byte.h"
 #include "../cdb.h"
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include "windows.h"
 #else
 #include <sys/mman.h>
@@ -18,7 +18,7 @@
 
 void cdb_free(struct cdb *c) {
   if (c->map) {
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
     UnmapViewOfFile(c->map);
 #else
     munmap(c->map,c->size);
@@ -32,7 +32,7 @@ void cdb_findstart(struct cdb *c) {
 }
 
 void cdb_init(struct cdb *c,int64 fd) {
-#if !(defined(_WIN32) || defined(_WIN64))
+#if !(((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__)))
   struct stat st;
   char *x;
 #endif
@@ -41,7 +41,7 @@ void cdb_init(struct cdb *c,int64 fd) {
   cdb_findstart(c);
   c->fd = fd;
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
   {
     HANDLE m=CreateFileMapping((HANDLE)(uintptr_t)fd,0,PAGE_READONLY,0,0,NULL);
     if (m)

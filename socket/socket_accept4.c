@@ -1,5 +1,5 @@
 #include "../io_internal.h"
-#if !(defined(_WIN32) || defined(_WIN64))
+#if !(((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__)))
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -8,7 +8,7 @@
 #include "../socket.h"
 #include "havesl.h"
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <windows.h>
 #include <mswsock.h>
 #include <errno.h>
@@ -20,7 +20,7 @@ int socket_accept4(int s,char *ip,uint16 *port) {
   socklen_t len = sizeof si;
   int fd;
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
   io_entry* e=array_get(&io_fds,sizeof(io_entry),s);
   if (e && e->inuse) {
     int sa2len;
@@ -73,7 +73,7 @@ incoming:
     if ((fd=accept(s,(void*) &si,&len))==-1)
       return winsock2errno(-1);
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
   }
 #endif
   if (ip) *(uint32*)ip = *(uint32*)&si.sin_addr;

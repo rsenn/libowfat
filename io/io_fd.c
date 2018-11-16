@@ -19,7 +19,7 @@
 #include <inttypes.h>
 #include <sys/epoll.h>
 #endif
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <io.h>
 #else
 #include <unistd.h>
@@ -30,19 +30,23 @@
 #include <sys/devpoll.h>
 #endif
 
+#ifdef __MSYS__
+#include <windows.h>
+#endif
+
 #ifdef __DMC__
 #define InterlockedCompareExchange(p, n, o) InterlockedCompareExchange((void**)p, (void*)n, (void*)o)
 #endif
 
 #ifdef __dietlibc__
 #include <sys/atomic.h>
-#elif (defined(_WIN32) || defined(_WIN64)) || (defined(__CYGWIN__) && __MSYS__ == 1)
+#elif (((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))) || (defined(__CYGWIN__) && __MSYS__ == 1)
 #define __CAS(ptr, oldval, newval) InterlockedCompareExchange(ptr, newval, oldval)
 #else
 #define __CAS(ptr, oldval, newval) __sync_val_compare_and_swap(ptr, oldval, newval)
 #endif
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <stdio.h>
 extern HANDLE io_comport;
 #endif
@@ -66,7 +70,7 @@ long alt_firstwrite;
 /* put d on internal data structure, return 1 on success, 0 on error */
 static io_entry* io_fd_internal(int64 d,int flags) {
   io_entry* e;
-#if !(defined(_WIN32) || defined(_WIN64))
+#if !(((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__)))
   long r;
   if ((flags&(IO_FD_BLOCK|IO_FD_NONBLOCK))==0) {
     if ((r=fcntl(d,F_GETFL,0)) == -1)
@@ -87,7 +91,7 @@ static io_entry* io_fd_internal(int64 d,int flags) {
     io_fds_inited=1;
   } else
     do { 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__BORLANDC__)
       __nop();
 #else
       asm("" : : : "memory"); 
@@ -97,7 +101,7 @@ static io_entry* io_fd_internal(int64 d,int flags) {
   if (e->inuse) return e;
   byte_zero(e,sizeof(io_entry));
   e->inuse=1;
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
   e->mh=0;
 #else
   if (r&O_NDELAY) e->nonblock=1;
@@ -132,7 +136,7 @@ static io_entry* io_fd_internal(int64 d,int flags) {
 	io_waitmode=_SIGIO;
     }
 #endif
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
     io_comport=CreateIoCompletionPort(INVALID_HANDLE_VALUE,NULL,0,0);
     if (io_comport) {
       io_waitmode=COMPLETIONPORT;
@@ -154,7 +158,7 @@ static io_entry* io_fd_internal(int64 d,int flags) {
     fcntl(d,F_SETFL,fcntl(d,F_GETFL)|O_NONBLOCK|O_ASYNC);
   }
 #endif
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
   if (io_comport) {
     fprintf(stderr,"Queueing %p at completion port %p...",d,io_comport);
     if (CreateIoCompletionPort((HANDLE)d,io_comport,(ULONG_PTR)d,0)==0) {

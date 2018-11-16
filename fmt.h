@@ -204,6 +204,7 @@ size_t fmt_escapecharc(char* dest,uint32_t ch) __pure__;
 /* internal functions, may be independently useful */
 char fmt_tohex(char c);
 
+#ifndef __BORLANDC__
 #define fmt_strm(b,...) fmt_strm_internal(b,__VA_ARGS__,(char*)0)
 size_t fmt_strm_internal(char* dest,...) __pure__;
 
@@ -211,6 +212,7 @@ size_t fmt_strm_internal(char* dest,...) __pure__;
 #define MAX_ALLOCA 100000
 #endif
 #define fmt_strm_alloca(a,...) ({ size_t len=fmt_strm((char*)0,a,__VA_ARGS__)+1; char* c=(len<MAX_ALLOCA?alloca(len):0); if (c) c[fmt_strm(c,a,__VA_ARGS__)]=0; c;})
+#endif
 
 #ifdef __cplusplus
 }

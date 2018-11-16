@@ -1,5 +1,5 @@
 #include "../io_internal.h"
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <errno.h>
 int io_passfd(int64 sock,int64 fd) {
   errno=EINVAL;

@@ -1,5 +1,5 @@
 #include "../io_internal.h"
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <io.h>
 #include <time.h>
 #else
@@ -34,7 +34,7 @@ int64 io_canwrite() {
     e->next_write=-1;
     debug_printf(("io_canwrite: dequeue %lld from normal write queue (next is %ld)\n",r,first_writeable));
     if (e->wantwrite &&
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
                         (e->canwrite || e->sendfilequeued==1)
 #else
                         e->canwrite

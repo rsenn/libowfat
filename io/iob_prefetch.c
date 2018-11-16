@@ -1,6 +1,6 @@
 #include "../iob_internal.h"
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 
 /* not supported */
 void iob_prefetch(io_batch* b,uint64 bytes) {

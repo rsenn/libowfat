@@ -2,7 +2,7 @@
 #include "../errmsg_int.h"
 #include "../str.h"
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 
 void errmsg_puts(int fd,const char* s) {
   return write(fd,s,str_len(s));

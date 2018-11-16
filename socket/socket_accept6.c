@@ -1,6 +1,6 @@
 #include "../io_internal.h"
 #include <sys/types.h>
-#if !(defined(_WIN32) || defined(_WIN64))
+#if !(((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__)))
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -13,7 +13,7 @@
 #include "havesl.h"
 #include "havescope.h"
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <windows.h>
 #include <mswsock.h>
 #include <errno.h>
@@ -30,7 +30,7 @@ int socket_accept6(int s,char* ip,uint16* port,uint32* scope_id)
   socklen_t dummy = sizeof sa;
   int fd;
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
   io_entry* e=array_get(&io_fds,sizeof(io_entry),s);
   if (e && e->inuse) {
     int sa2len;
@@ -82,7 +82,7 @@ incoming:
     fd = accept(s,(struct sockaddr *) &sa,&dummy);
     if (fd == -1)
       return winsock2errno(-1);
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
   }
 #endif
 

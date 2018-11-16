@@ -5,7 +5,7 @@
 /* this is an internal function, called by io_trywrite and io_waitwrite */
 
 void io_sigpipe(void) {
-#if !(defined(_WIN32) || defined(_WIN64))
+#if !(((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__)))
   static int isitdone;
   if (!isitdone) {
     signal(SIGPIPE,SIG_IGN);

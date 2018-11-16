@@ -1,19 +1,19 @@
 #include "../io_internal.h"
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <io.h>
 #include <time.h>
 #else
 #include <unistd.h>
 #include <sys/time.h>
 #endif
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <windows.h>
 #else
 #include <poll.h>
 #endif
 #include <errno.h>
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <stdio.h>
 
 /* All the Unix trickery is unsupported on Windows.  Instead, one is

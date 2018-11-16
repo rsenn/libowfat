@@ -1,6 +1,6 @@
 #include "../likely.h"
 #include <stdlib.h>
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <io.h>
 #else
 #include <fcntl.h>
@@ -18,7 +18,8 @@
 
 #ifdef __dietlibc__
 # include <sys/atomic.h>
-#elif defined(_WIN32) || defined(_WIN64) || defined(__MSYS__)
+
+#elif ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__)) || defined(__MSYS__)
 # include <windows.h>
 # define __CAS(val,oldval,newval) InterlockedCompareExchange(val,newval,oldval)
 #  define __CAS_PTR(ptr,oldptr,newptr) InterlockedCompareExchangePointer(ptr,newptr,oldptr)
@@ -34,7 +35,7 @@
 #endif
 
 static iarray_page* new_page(size_t pagesize) {
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
   void* x=malloc(pagesize);
   if (x==0) return 0;
 #else
@@ -62,7 +63,7 @@ void* iarray_allocate(iarray* ia,size_t pos) {
     if (!*p) {
       if (!newpage)
 	if (!(newpage=new_page(ia->bytesperpage))) return 0;
-      if (__CAS(p,0,newpage)==0)
+      if (__CAS_PTR(p,0,newpage)==0)
 	newpage=0;
     }
     if (index+ia->elemperpage>pos)
@@ -70,7 +71,7 @@ void* iarray_allocate(iarray* ia,size_t pos) {
     p=&(*p)->next;
   }
   if (newpage)
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
     free(newpage);
 #else
     munmap(newpage,ia->bytesperpage);

@@ -1,5 +1,5 @@
 #include "../io_internal.h"
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <io.h>
 #else
 #include <unistd.h>
@@ -89,7 +89,7 @@ void io_wantwrite_really(int64 d, io_entry* e) {
     }
   }
 #endif
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
   printf("e->wantwrite == %d\n",e->wantwrite);
   if (!e->wantwrite) {
     e->next_write=first_writeable;

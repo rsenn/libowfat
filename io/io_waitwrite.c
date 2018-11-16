@@ -1,17 +1,17 @@
 #include "../io_internal.h"
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <io.h>
 #else
 #include <unistd.h>
 #endif
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <windows.h>
 #else
 #include <poll.h>
 #endif
 #include <errno.h>
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 
 int64 io_waitwrite(int64 d,const char* buf,int64 len) {
   long r;

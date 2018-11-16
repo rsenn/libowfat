@@ -30,7 +30,7 @@
 // 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef _MSC_VER // [
+#if !defined(_MSC_VER) && !defined(__BORLANDC__) // [
 #error "Use this header only with Microsoft Visual C++ compilers!"
 #endif // _MSC_VER ]
 
@@ -263,36 +263,6 @@ typedef struct {
 #endif  // _WIN64 ]
 
 #endif // __STDC_FORMAT_MACROS ]
-
-// 7.8.2 Functions for greatest-width integer types
-
-// 7.8.2.1 The imaxabs function
-#define imaxabs _abs64
-
-// 7.8.2.2 The imaxdiv function
-
-// This is modified version of div() function from Microsoft's div.c found
-// in %MSVC.NET%\crt\src\div.c
-#ifdef STATIC_IMAXDIV // [
-static
-#else // STATIC_IMAXDIV ][
-_inline
-#endif // STATIC_IMAXDIV ]
-imaxdiv_t __cdecl imaxdiv(intmax_t numer, intmax_t denom)
-{
-   imaxdiv_t result;
-
-   result.quot = numer / denom;
-   result.rem = numer % denom;
-
-   if (numer < 0 && result.rem > 0) {
-      // did division wrong; must fix up
-      ++result.quot;
-      result.rem -= denom;
-   }
-
-   return result;
-}
 
 // 7.8.2.3 The strtoimax and strtoumax functions
 #define strtoimax _strtoi64

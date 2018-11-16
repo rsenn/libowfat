@@ -30,9 +30,9 @@
 // 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef _MSC_VER // [
+#if !defined(_MSC_VER) && !defined(__BORLANDC__) // [
 #error "Use this header only with Microsoft Visual C++ compilers!"
-#endif // _MSC_VER ]
+#endif ]
 
 #ifndef _MSC_STDINT_H_ // [
 #define _MSC_STDINT_H_

@@ -1,5 +1,5 @@
 #include "../io_internal.h"
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <io.h>
 #else
 #include <unistd.h>
@@ -7,7 +7,7 @@
 #include <fcntl.h>
 #include <errno.h>
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <winsock2.h>
 #include "../windoze.h"
 #endif
@@ -18,7 +18,7 @@
 
 void io_block(int64 d) {
   io_entry* e=iarray_get(&io_fds,d);
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
   unsigned long i=0;
   if (ioctlsocket( d, FIONBIO, &i)==0)
     if (e) e->nonblock=0;

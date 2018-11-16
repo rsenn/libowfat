@@ -21,6 +21,7 @@ check_symbol_exists(__MSYS__ "" MSYS)
 check_symbol_exists(__CYGWIN__ "" CYGWIN)
 check_symbol_exists(__MINGW32__ "" MINGW32)
 check_symbol_exists(__MINGW64__ "" MINGW64)
+check_symbol_exists(__BORLANDC__ "" BORLANDC)
 #check_symbol_exists(_MSC_VER "" MSVC)
 
 if(MINGW32 OR MINGW64)
@@ -70,15 +71,27 @@ message("SYSTEM: ${SYSTEM}")
 check_include_file(stdint.h HAVE_STDINT_H)
 check_include_file(inttypes.h HAVE_INTTYPES_H)
 
-if(MSVC)
-  if(NOT HAVE_STDINT_H OR NOT HAVE_INTTYPES_H)
-    include_directories("${CMAKE_CURRENT_SOURCE_DIR}/inttypes/include")
-    list(APPEND CMAKE_REQUIRED_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/inttypes/include")
-    list(APPEND CMAKE_REQUIRED_FLAGS "-I${CMAKE_CURRENT_SOURCE_DIR}/inttypes/include")
-    set(INTTYPES_CFLAGS "-I../../../../inttypes/include -Iinttypes/include")
-    set(INLINE_CFLAGS "-Dinline=__inline")
-  endif()
+if(NOT HAVE_INTTYPES_H)
+  include_directories("${CMAKE_CURRENT_SOURCE_DIR}/msvc/inttypes")
+  list(APPEND CMAKE_REQUIRED_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/msvc/inttypes")
+  set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/msvc/inttypes")
+  set(INTTYPES_CFLAGS "${INTTYPES_CFLAGS} -I../../../../msvc/inttypes -Imsvc/inttypes")
 endif()
+
+if(MSVC)
+  if(NOT HAVE_STDINT_H)
+    include_directories("${CMAKE_CURRENT_SOURCE_DIR}/msvc/stdint")
+    list(APPEND CMAKE_REQUIRED_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/msvc/stdint")
+    set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS}  -I${CMAKE_CURRENT_SOURCE_DIR}/msvc/stdint")
+    set(INTTYPES_CFLAGS "${INTTYPES_CFLAGS} -I../../../../msvc/stdint -Imsvc/stdint")
+  endif()
+  set(INLINE_CFLAGS "-Dinline=__inline")
+endif()
+
+if(BORLANDC)
+set(INLINE_CFLAGS "-Dinline=__inline")
+endif()
+
 if(INLINE_CFLAGS)
   add_definitions("${INLINE_CFLAGS}")
 endif()
@@ -258,7 +271,8 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 try_compile(RCOMP_ENT 
   "${CMAKE_BINARY_DIR}" "${CMAKE_SOURCE_DIR}/ent.c"
   CMAKE_FLAGS 
-  "-DCOMPILE_DEFINITIONS=-I${CMAKE_BINARY_DIR} ${INTTYPES_CFLAGS} ${INLINE_CFLAGS}"
+  "-DINCLUDE_DIRECTORIES=${CMAKE_BINARY_DIR};${CMAKE_SOURCE_DIR} -DCOMPILE_DEFINITIONS=${INTTYPES_CFLAGS};${INLINE_CFLAGS}"
+  COMPILE_DEFINITIONS "${INTTYPES_CFLAGS} ${INLINE_CFLAGS}"
      OUTPUT_VARIABLE COMPILE_ENT
   COPY_FILE "${CMAKE_BINARY_DIR}/ent")
 

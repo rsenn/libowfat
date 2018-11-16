@@ -1,12 +1,12 @@
 #include "../io_internal.h"
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <io.h>
 #include <time.h>
 #else
 #include <unistd.h>
 #include <sys/time.h>
 #endif
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <windows.h>
 #include <stdio.h>
 #else
@@ -15,7 +15,7 @@
 #include <errno.h>
 #include "../byte.h"
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 /* In Windows, I/O works differently. */
 /* Instead of calling read until it says EAGAIN, you call read in
  * overlapping mode, and then wait for it to finish.

@@ -3,7 +3,7 @@
 #include "../iarray.h"
 #include "../fmt.h"
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <time.h>
 #include <windows.h>
 
@@ -13,7 +13,7 @@
   #define DELTA_EPOCH_IN_MICROSECS  11644473600000000ULL
 #endif
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || defined(__BORLANDC__)
 struct timezone 
 {
   int  tz_minuteswest; /* minutes W of Greenwich */

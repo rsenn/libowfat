@@ -1,5 +1,5 @@
 #include "../io_internal.h"
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <io.h>
 #include <time.h>
 #else
@@ -8,7 +8,7 @@
 #endif
 #include <errno.h>
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <stdio.h>
 #endif
 
@@ -38,12 +38,12 @@ int64 io_canread() {
     e->next_read=-1;
     debug_printf(("io_canread: dequeue %lld from normal read queue (next is %ld)\n",r,first_readable));
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 //    printf("event on %d: wr %d rq %d aq %d\n",(int)r,e->wantread,e->readqueued,e->acceptqueued);
 #endif
 
     if (e->wantread &&
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 		       (e->canread || e->acceptqueued==1 || e->readqueued==1)
 #else
 			e->canread

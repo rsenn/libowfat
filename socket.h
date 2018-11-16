@@ -2,7 +2,7 @@
 #ifndef SOCKET_H
 #define SOCKET_H
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #ifndef _WINSOCKAPI_
 #define _WINSOCKAPI_
 #endif
@@ -112,7 +112,7 @@ ssize_t socket_fastopen_connect4(int s,const char* ip,uint16 port,const char* bu
 ssize_t socket_fastopen_connect6(int s,const char* ip,uint16 port,uint32 scope_id,const char* buf,size_t len);
 
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <ws2tcpip.h>
 
 #ifndef EWOULDBLOCK

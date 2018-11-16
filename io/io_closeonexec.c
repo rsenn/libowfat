@@ -1,4 +1,4 @@
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <io.h>
 #else
 #include <unistd.h>
@@ -8,7 +8,7 @@
 #include "../io_internal.h"
 
 void io_closeonexec(int64 d) {
-#if !(defined(_WIN32) || defined(_WIN64))
+#if !(((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__)))
   fcntl(d,F_SETFL,fcntl(d,F_GETFL,0) | FD_CLOEXEC);
 #endif
 }

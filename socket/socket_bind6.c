@@ -1,7 +1,7 @@
 #include <errno.h>
 #include "haveip6.h"
 #include <sys/types.h>
-#if !(defined(_WIN32) || defined(_WIN64))
+#if !(((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__)))
 #include <sys/socket.h>
 #include <netinet/in.h>
 #endif
@@ -10,15 +10,13 @@
 #include "../byte.h"
 #include "../socket.h"
 
-int socket_bind6(int s,const char ip[16],uint16 port,uint32 scope_id)
+int socket_bind6(int s,const char* ip,uint16 port,uint32 scope_id)
 {
 #ifdef LIBC_HAS_IP6
   struct sockaddr_in6 sa;
 #endif
   int i;
-
   if (!ip) ip=V6any;
-
 #ifdef LIBC_HAS_IP6
   if (noipv6) {
 #endif

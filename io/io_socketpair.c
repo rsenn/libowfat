@@ -1,7 +1,7 @@
 #include "../io_internal.h"
 #include "../windoze.h"
 #include <sys/types.h>
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <io.h>
 #else
 #include <unistd.h>
@@ -10,7 +10,7 @@
 #endif
 #include <errno.h>
 
-#if (defined(_WIN32) || defined(_WIN64))
+#if (((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__)))
 
 #define socketpair(af, sock, proto, fds) windoze_socketpair(fds, TRUE)
 /* 

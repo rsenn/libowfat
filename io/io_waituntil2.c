@@ -6,7 +6,7 @@
 #define _GNU_SOURCE
 #include <signal.h>
 #endif
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <windows.h>
 #include <stdio.h>
 #include <time.h>
@@ -116,7 +116,7 @@ static void handleevent(int fd,int readable,int writable,int error) {
 #endif
 
 int64 io_waituntil2(int64 milliseconds) {
-#if !(defined(_WIN32) || defined(_WIN64))
+#if !(((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__)))
   struct pollfd* p;
 #endif
   long i,j,r;
@@ -357,7 +357,7 @@ int64 io_waituntil2(int64 milliseconds) {
   }
 dopoll:
 #endif
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
   {
     DWORD numberofbytes;
     ULONG_PTR x;
