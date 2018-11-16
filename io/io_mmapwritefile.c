@@ -1,10 +1,11 @@
 #include "../io_internal.h"
 #include "../iob.h"
-#include <unistd.h>
 #include <sys/types.h>
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
+#include <io.h>
 #else
+#include <unistd.h>
 #include <sys/mman.h>
 #endif
 #include <errno.h>

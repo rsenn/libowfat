@@ -1,3 +1,4 @@
+#include "../io_internal.h"
 #if defined(_WIN32) || defined(_WIN64)
 #include <io.h>
 #else
@@ -9,7 +10,6 @@
 #else
 #include <sys/mman.h>
 #endif
-#include "../io_internal.h"
 
 extern void io_dontwantread_really(int64 d,io_entry* e);
 extern void io_dontwantwrite_really(int64 d,io_entry* e);

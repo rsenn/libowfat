@@ -2,6 +2,13 @@
 #ifndef SOCKET_H
 #define SOCKET_H
 
+#if defined(_WIN32) || defined(_WIN64)
+#ifndef _WINSOCKAPI_
+#define _WINSOCKAPI_
+#endif
+#include <winsock2.h>
+#endif
+
 #include <sys/types.h>
 
 #include "uint16.h"
@@ -106,7 +113,6 @@ ssize_t socket_fastopen_connect6(int s,const char* ip,uint16 port,uint32 scope_i
 
 
 #if defined(_WIN32) || defined(_WIN64)
-#include <winsock2.h>
 #include <ws2tcpip.h>
 
 #ifndef EWOULDBLOCK

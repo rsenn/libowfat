@@ -1,3 +1,4 @@
+#include "../io_internal.h"
 #if defined(_WIN32) || defined(_WIN64)
 #include <io.h>
 #else
@@ -9,7 +10,6 @@
 #include <poll.h>
 #endif
 #include <errno.h>
-#include "../io_internal.h"
 
 #if defined(_WIN32) || defined(_WIN64)
 

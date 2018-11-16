@@ -1,3 +1,4 @@
+#include "../likely.h"
 #include "../rangecheck.h"
 
 /* does an ASCIIZ string starting at "ptr" lie in buf[0..len-1]? */

@@ -1,11 +1,12 @@
+#include "../io_internal.h"
 #if defined(_WIN32) || defined(_WIN64)
 #include <io.h>
+#include <time.h>
 #else
 #include <unistd.h>
-#endif
 #include <sys/time.h>
+#endif
 #include <errno.h>
-#include "../io_internal.h"
 
 void io_wantwrite_really(int64 d, io_entry* e);
 

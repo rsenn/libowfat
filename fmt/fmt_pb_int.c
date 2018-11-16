@@ -1,3 +1,4 @@
+#include "../likely.h"
 #include "../fmt.h"
 
 size_t fmt_pb_int(char* dest,size_t fieldno,unsigned long long l) {

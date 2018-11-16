@@ -1,3 +1,4 @@
+#include "../io_internal.h"
 #include "../windoze.h"
 #include <sys/types.h>
 #if defined(_WIN32) || defined(_WIN64)
@@ -8,7 +9,6 @@
 #include <netinet/in.h>
 #endif
 #include <errno.h>
-#include "../io_internal.h"
 
 #if (defined(_WIN32) || defined(_WIN64))
 

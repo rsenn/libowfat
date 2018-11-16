@@ -1,3 +1,4 @@
+#include "../io_internal.h"
 #if !(defined(_WIN32) || defined(_WIN64))
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -12,7 +13,6 @@
 #include <mswsock.h>
 #include <errno.h>
 #include <stdio.h>
-#include "../io_internal.h"
 #endif
 
 int socket_accept4(int s,char *ip,uint16 *port) {

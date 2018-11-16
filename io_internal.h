@@ -2,6 +2,11 @@
 #define my_extern extern
 #endif
 
+#if defined(_WIN32) || defined(_WIN64)
+#define _WINSOCKAPI_
+#include <winsock2.h>
+#endif
+
 #include "io.h"
 #include "array.h"
 #include "iarray.h"

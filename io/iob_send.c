@@ -1,9 +1,9 @@
+#include "../io_internal.h"
 #if defined(_WIN32) || defined(_WIN64)
 
 #include <windows.h>
 #include <mswsock.h>
 #include <errno.h>
-#include "../io_internal.h"
 #include "../iob_internal.h"
 #include <stdio.h>
 

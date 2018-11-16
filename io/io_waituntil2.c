@@ -6,13 +6,14 @@
 #define _GNU_SOURCE
 #include <signal.h>
 #endif
-#include <unistd.h>
-#include <sys/time.h>
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #include <stdio.h>
+#include <time.h>
 #else
+#include <unistd.h>
 #include <poll.h>
+#include <sys/time.h>
 #endif
 #include <errno.h>
 #ifdef HAVE_KQUEUE

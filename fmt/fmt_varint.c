@@ -13,4 +13,6 @@ size_t fmt_varint(char* dest,unsigned long long l) {
 
 #ifdef __GNUC__
 size_t fmt_pb_type0_int(char* dest,unsigned long long l) __attribute__((alias("fmt_varint")));
+#else
+size_t fmt_pb_type0_int(char* dest,unsigned long long l) { return fmt_varint(dest, l); }
 #endif

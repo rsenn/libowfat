@@ -1,6 +1,6 @@
+#include "../io_internal.h"
 #if defined(_WIN32) || defined(_WIN64)
 #include <errno.h>
-#include "../io_internal.h"
 int64 io_receivefd(int64 sock) {
   errno=EINVAL;
   return -1;
@@ -25,7 +25,6 @@ int64 io_receivefd(int64 sock) {
 #include <sys/socket.h>
 #include <sys/uio.h>
 #include <errno.h>
-#include "../io_internal.h"
 
 union fdmsg {
   struct cmsghdr h;

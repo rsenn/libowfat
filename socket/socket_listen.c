@@ -1,6 +1,6 @@
+#include "../io_internal.h"
 #include <sys/types.h>
 #if defined(_WIN32) || defined(_WIN64)
-#include "../io_internal.h"
 #include <mswsock.h>
 #else
 #include <sys/socket.h>

@@ -1,3 +1,4 @@
+#include "../likely.h"
 #include "../rangecheck.h"
 #include "../safemult.h"
 

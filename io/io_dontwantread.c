@@ -1,3 +1,4 @@
+#include "../io_internal.h"
 #if defined(_WIN32) || defined(_WIN64)
 #include <io.h>
 #else
@@ -5,7 +6,6 @@
 #endif
 #include <fcntl.h>
 #include <errno.h>
-#include "../io_internal.h"
 #ifdef HAVE_KQUEUE
 #include <sys/types.h>
 #include <sys/event.h>

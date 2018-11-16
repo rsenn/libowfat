@@ -1,3 +1,4 @@
+#include "../likely.h"
 #define _GNU_SOURCE
 #include <errno.h>
 #define my_extern
@@ -18,17 +19,27 @@
 #include <inttypes.h>
 #include <sys/epoll.h>
 #endif
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #ifdef HAVE_DEVPOLL
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/devpoll.h>
 #endif
 
+#ifdef __DMC__
+#define InterlockedCompareExchange(p, n, o) InterlockedCompareExchange((void**)p, (void*)n, (void*)o)
+#endif
+
 #ifdef __dietlibc__
 #include <sys/atomic.h>
+#elif (defined(_WIN32) || defined(_WIN64)) || (defined(__CYGWIN__) && __MSYS__ == 1)
+#define __CAS(ptr, oldval, newval) InterlockedCompareExchange(ptr, newval, oldval)
 #else
-#define __CAS(ptr,oldval,newval) __sync_val_compare_and_swap(ptr,oldval,newval)
+#define __CAS(ptr, oldval, newval) __sync_val_compare_and_swap(ptr, oldval, newval)
 #endif
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -75,7 +86,13 @@ static io_entry* io_fd_internal(int64 d,int flags) {
     iarray_init(&io_fds,sizeof(io_entry));
     io_fds_inited=1;
   } else
-    do { asm("" : : : "memory"); } while (io_fds_inited!=1);
+    do { 
+#ifdef _MSC_VER
+      __nop();
+#else
+      asm("" : : : "memory"); 
+#endif
+    } while (io_fds_inited!=1);
   if (!(e=iarray_allocate(&io_fds,d))) return 0;
   if (e->inuse) return e;
   byte_zero(e,sizeof(io_entry));

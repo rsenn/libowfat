@@ -1,6 +1,7 @@
 #include "../socket.h"
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
+#include <io.h>
 #else
 #include <sys/types.h>
 #include <unistd.h>
