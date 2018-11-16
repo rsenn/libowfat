@@ -49,8 +49,8 @@ int64 iob_send(int64 s,io_batch* b) {
     fprintf(stderr,"found non-sent buffer batch entry at %d\n",i);
     if (x+i+1 < last &&
 	(x[i+1].type==FROMFILE)) {
-      fprintf(stderr,"Next is a file, can use TransmitFile\n",i);
       TRANSMIT_FILE_BUFFERS tfb;
+      fprintf(stderr,"Next is a file, can use TransmitFile\n",i);
       e->sendfilequeued=1;
       memset(&tfb,0,sizeof(tfb));
       memset(&e[i].os,0,sizeof(e[i].os));

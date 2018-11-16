@@ -22,9 +22,10 @@
  * for lengths, use scan_asn1derlengthvalue. */
 
 size_t scan_asn1derlengthvalue(const char* src,size_t len,unsigned long long* value) {
-  if (len==0 || len>=-(uintptr_t)src) return 0;
-  unsigned int i,c=*src;
+  unsigned int i,c;
   unsigned long long l;
+  if (len==0 || len>=-(uintptr_t)src) return 0;
+  c=*src;
   if ((c&0x80)==0) {
     *value=c;
     return 1;

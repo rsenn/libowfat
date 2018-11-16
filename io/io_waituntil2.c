@@ -358,84 +358,86 @@ int64 io_waituntil2(int64 milliseconds) {
 dopoll:
 #endif
 #if defined(_WIN32) || defined(_WIN64)
-  DWORD numberofbytes;
-  ULONG_PTR x;
-  LPOVERLAPPED o;
-  if (first_readable!=-1 || first_writeable!=-1) {
-    fprintf(stderr,"io_waituntil2() returning immediately because first_readable(%p) or first_writeable(%p) are set\n",first_readable,first_writeable);
-    return;
-  }
-  fprintf(stderr,"Calling GetQueuedCompletionStatus %p...",io_comport);
-  if (GetQueuedCompletionStatus(io_comport,&numberofbytes,&x,&o,milliseconds==-1?INFINITE:milliseconds)) {
-    io_entry* e=iarray_get(&io_fds,x);
-    fprintf(stderr," OK.  Got %x, e=%p\n",x,e);
-    if (!e) return 0;
-    e->errorcode=0;
-    fprintf(stderr,"o=%p, e->or=%p, e->ow=%p, e->os=%p\n",o,&e->or,&e->ow,&e->os);
-    fprintf(stderr,"e->readqueued=%d, e->writequeued=%d, e->acceptqueued=%d, e->connectqueued=%d, e->sendfilequeued=%d\n",
-	    e->readqueued,e->writequeued,e->acceptqueued,e->connectqueued,e->sendfilequeued);
-    if (o==&e->or && e->readqueued==1) {
-      e->readqueued=2;
-      e->canread=1;
-      e->bytes_read=numberofbytes;
-      e->next_read=first_readable;
-      first_readable=x;
-//      printf("read %lu bytes on fd %lu: %p\n",numberofbytes,x,e);
-    } else if (o==&e->ow && e->writequeued==1) {
-      e->writequeued=2;
-      e->canwrite=1;
-      e->bytes_written=numberofbytes;
-      e->next_write=first_writeable;
-      first_writeable=x;
-    } else if (o==&e->or && e->acceptqueued==1) {
-      e->acceptqueued=2;
-      e->canread=1;
-      e->next_read=first_readable;
-      first_readable=x;
-    } else if (o==&e->ow && e->connectqueued==1) {
-      e->connectqueued=2;
-      e->canwrite=1;
-      e->next_write=first_writeable;
-      first_writeable=x;
-    } else if (o==&e->os && e->sendfilequeued==1) {
-      e->sendfilequeued=2;
-      e->canwrite=1;
-      e->bytes_written=numberofbytes;
-      e->next_write=first_writeable;
-      first_writeable=x;
+  {
+    DWORD numberofbytes;
+    ULONG_PTR x;
+    LPOVERLAPPED o;
+    if (first_readable!=-1 || first_writeable!=-1) {
+      fprintf(stderr,"io_waituntil2() returning immediately because first_readable(%p) or first_writeable(%p) are set\n",first_readable,first_writeable);
+      return;
     }
-    return 1;
-  } else {
-    /* either the overlapped I/O request failed or we timed out */
-    DWORD err;
-    io_entry* e;
-    fprintf(stderr," failure, o=%p.\n",o);
-    if (!o) return 0;	/* timeout */
-    /* we got a completion packet for a failed I/O operation */
-    err=GetLastError();
-    if (err==WAIT_TIMEOUT) return 0;	/* or maybe not */
-    e=iarray_get(&io_fds,x);
-    if (!e) return 0;	/* WTF?! */
-    e->errorcode=err;
-    if (o==&e->or && (e->readqueued || e->acceptqueued)) {
-      if (e->readqueued) e->readqueued=2; else
-      if (e->acceptqueued) e->acceptqueued=2;
-      e->canread=1;
-      e->bytes_read=-1;
-      e->next_read=first_readable;
-      first_readable=x;
-    } else if ((o==&e->ow || o==&e->os) &&
-               (e->writequeued || e->connectqueued || e->sendfilequeued)) {
-      if (o==&e->ow) {
-	if (e->writequeued) e->writequeued=2; else
-        if (e->connectqueued) e->connectqueued=2;
-      } else if (o==&e->os) e->sendfilequeued=2;
-      e->canwrite=1;
-      e->bytes_written=-1;
-      e->next_write=first_writeable;
-      first_writeable=x;
+    fprintf(stderr,"Calling GetQueuedCompletionStatus %p...",io_comport);
+    if (GetQueuedCompletionStatus(io_comport,&numberofbytes,&x,&o,milliseconds==-1?INFINITE:milliseconds)) {
+      io_entry* e=iarray_get(&io_fds,x);
+      fprintf(stderr," OK.  Got %x, e=%p\n",x,e);
+      if (!e) return 0;
+      e->errorcode=0;
+      fprintf(stderr,"o=%p, e->or=%p, e->ow=%p, e->os=%p\n",o,&e->or,&e->ow,&e->os);
+      fprintf(stderr,"e->readqueued=%d, e->writequeued=%d, e->acceptqueued=%d, e->connectqueued=%d, e->sendfilequeued=%d\n",
+              e->readqueued,e->writequeued,e->acceptqueued,e->connectqueued,e->sendfilequeued);
+      if (o==&e->or && e->readqueued==1) {
+        e->readqueued=2;
+        e->canread=1;
+        e->bytes_read=numberofbytes;
+        e->next_read=first_readable;
+        first_readable=x;
+  //      printf("read %lu bytes on fd %lu: %p\n",numberofbytes,x,e);
+      } else if (o==&e->ow && e->writequeued==1) {
+        e->writequeued=2;
+        e->canwrite=1;
+        e->bytes_written=numberofbytes;
+        e->next_write=first_writeable;
+        first_writeable=x;
+      } else if (o==&e->or && e->acceptqueued==1) {
+        e->acceptqueued=2;
+        e->canread=1;
+        e->next_read=first_readable;
+        first_readable=x;
+      } else if (o==&e->ow && e->connectqueued==1) {
+        e->connectqueued=2;
+        e->canwrite=1;
+        e->next_write=first_writeable;
+        first_writeable=x;
+      } else if (o==&e->os && e->sendfilequeued==1) {
+        e->sendfilequeued=2;
+        e->canwrite=1;
+        e->bytes_written=numberofbytes;
+        e->next_write=first_writeable;
+        first_writeable=x;
+      }
+      return 1;
+    } else {
+      /* either the overlapped I/O request failed or we timed out */
+      DWORD err;
+      io_entry* e;
+      fprintf(stderr," failure, o=%p.\n",o);
+      if (!o) return 0;	/* timeout */
+      /* we got a completion packet for a failed I/O operation */
+      err=GetLastError();
+      if (err==WAIT_TIMEOUT) return 0;	/* or maybe not */
+      e=iarray_get(&io_fds,x);
+      if (!e) return 0;	/* WTF?! */
+      e->errorcode=err;
+      if (o==&e->or && (e->readqueued || e->acceptqueued)) {
+        if (e->readqueued) e->readqueued=2; else
+        if (e->acceptqueued) e->acceptqueued=2;
+        e->canread=1;
+        e->bytes_read=-1;
+        e->next_read=first_readable;
+        first_readable=x;
+      } else if ((o==&e->ow || o==&e->os) &&
+                (e->writequeued || e->connectqueued || e->sendfilequeued)) {
+        if (o==&e->ow) {
+          if (e->writequeued) e->writequeued=2; else
+          if (e->connectqueued) e->connectqueued=2;
+        } else if (o==&e->os) e->sendfilequeued=2;
+        e->canwrite=1;
+        e->bytes_written=-1;
+        e->next_write=first_writeable;
+        first_writeable=x;
+      }
+      return 1;
     }
-    return 1;
   }
 #else
   for (i=r=0; (size_t)i<iarray_length(&io_fds); ++i) {

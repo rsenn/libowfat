@@ -3,11 +3,24 @@
 #include "../scan.h"
 #include "../byte.h"
 #include "../case.h"
-#include <time.h>
+//#include <time.h>
 #include <stdlib.h>
+
+#if _MSC_VER <= 1500
+#define _CRT_NO_TIME_T 1
+#endif
 
 #ifdef sgi
 extern char** environ;
+#endif
+
+#if defined(_WIN32) || defined(_WIN64)
+#ifdef _CRT_NO_TIME_T
+struct timespec {
+	time_t	tv_sec;		/* seconds */
+	long	tv_nsec;	/* and nanoseconds */
+};
+#endif
 #endif
 
 /* "2014-05-27T19:22:16Z" */
