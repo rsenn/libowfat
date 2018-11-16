@@ -31,7 +31,7 @@
 #define __CAS(ptr,oldval,newval) __sync_val_compare_and_swap(ptr,oldval,newval)
 #endif
 
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
 #include <stdio.h>
 extern HANDLE io_comport;
 #endif
@@ -55,7 +55,7 @@ long alt_firstwrite;
 /* put d on internal data structure, return 1 on success, 0 on error */
 static io_entry* io_fd_internal(int64 d,int flags) {
   io_entry* e;
-#ifndef __MINGW32__
+#if !(defined(_WIN32) || defined(_WIN64))
   long r;
   if ((flags&(IO_FD_BLOCK|IO_FD_NONBLOCK))==0) {
     if ((r=fcntl(d,F_GETFL,0)) == -1)
@@ -80,7 +80,7 @@ static io_entry* io_fd_internal(int64 d,int flags) {
   if (e->inuse) return e;
   byte_zero(e,sizeof(io_entry));
   e->inuse=1;
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
   e->mh=0;
 #else
   if (r&O_NDELAY) e->nonblock=1;
@@ -115,7 +115,7 @@ static io_entry* io_fd_internal(int64 d,int flags) {
 	io_waitmode=_SIGIO;
     }
 #endif
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
     io_comport=CreateIoCompletionPort(INVALID_HANDLE_VALUE,NULL,0,0);
     if (io_comport) {
       io_waitmode=COMPLETIONPORT;
@@ -137,7 +137,7 @@ static io_entry* io_fd_internal(int64 d,int flags) {
     fcntl(d,F_SETFL,fcntl(d,F_GETFL)|O_NONBLOCK|O_ASYNC);
   }
 #endif
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
   if (io_comport) {
     fprintf(stderr,"Queueing %p at completion port %p...",d,io_comport);
     if (CreateIoCompletionPort((HANDLE)d,io_comport,(ULONG_PTR)d,0)==0) {

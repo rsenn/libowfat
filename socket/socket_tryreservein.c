@@ -1,5 +1,5 @@
 #include <sys/types.h>
-#ifndef __MINGW32__
+#if !(defined(_WIN32) || defined(_WIN64))
 #include <sys/socket.h>
 #endif
 #include "windoze.h"

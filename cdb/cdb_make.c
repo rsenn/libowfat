@@ -1,6 +1,10 @@
 #define _FILE_OFFSET_BITS 64
 
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #include <stdlib.h>
 #include <errno.h>
 #include "cdb.h"

@@ -1,4 +1,8 @@
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #ifdef __MINGW32__
 #include <windows.h>
 #else

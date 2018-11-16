@@ -2,7 +2,11 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #include <errno.h>
 #include "byte.h"
 #include "cdb.h"

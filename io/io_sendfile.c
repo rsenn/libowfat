@@ -141,7 +141,7 @@ int64 io_sendfile(int64 s,int64 fd,uint64 off,uint64 n) {
 }
 #endif
 
-#elif defined(__MINGW32__)
+#elif (defined(_WIN32) || defined(_WIN64))
 
 #include <windows.h>
 #include <mswsock.h>

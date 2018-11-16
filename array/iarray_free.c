@@ -2,7 +2,11 @@
 #ifndef __MINGW32__
 #include <sys/mman.h>
 #endif
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #include "iarray.h"
 
 static void freechain(iarray_page* p,size_t pagesize) {

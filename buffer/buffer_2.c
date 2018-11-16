@@ -1,4 +1,8 @@
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #include "buffer.h"
 
 char buffer_2_space[BUFFER_INSIZE];

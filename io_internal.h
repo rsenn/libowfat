@@ -5,7 +5,7 @@
 #include "io.h"
 #include "array.h"
 #include "iarray.h"
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
 #include "socket.h"
 my_extern HANDLE io_comport;
 #else
@@ -46,7 +46,7 @@ typedef struct {
   unsigned int kernelwantread:1;	/* did we tell the kernel we want to read/write? */
   unsigned int kernelwantwrite:1;
   unsigned int epolladded:1;
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
   unsigned int readqueued:2;
   unsigned int writequeued:2;
   unsigned int acceptqueued:2;
@@ -60,7 +60,7 @@ typedef struct {
   void* mmapped;
   long maplen;
   uint64 mapofs;
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
   OVERLAPPED or,ow,os;	/* overlapped for read+accept, write+connect, sendfile */
   HANDLE /* fd, */ mh;
   char inbuf[8192];
@@ -95,7 +95,7 @@ my_extern enum __io_waitmode {
 #ifdef HAVE_DEVPOLL
   ,DEVPOLL
 #endif
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
   ,COMPLETIONPORT
 #endif
 } io_waitmode;

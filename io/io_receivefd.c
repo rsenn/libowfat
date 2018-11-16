@@ -1,4 +1,4 @@
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
 #include <errno.h>
 #include "io_internal.h"
 int64 io_receivefd(int64 sock) {

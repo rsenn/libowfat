@@ -8,7 +8,7 @@
 #endif
 #include <unistd.h>
 #include <sys/time.h>
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #include <stdio.h>
 #else
@@ -115,7 +115,7 @@ static void handleevent(int fd,int readable,int writable,int error) {
 #endif
 
 int64 io_waituntil2(int64 milliseconds) {
-#ifndef __MINGW32__
+#if !(defined(_WIN32) || defined(_WIN64))
   struct pollfd* p;
 #endif
   long i,j,r;
@@ -356,7 +356,7 @@ int64 io_waituntil2(int64 milliseconds) {
   }
 dopoll:
 #endif
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
   DWORD numberofbytes;
   ULONG_PTR x;
   LPOVERLAPPED o;

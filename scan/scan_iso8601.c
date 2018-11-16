@@ -41,7 +41,7 @@ size_t scan_iso8601(const char* in,struct timespec* t) {
   x.tm_wday=x.tm_yday=x.tm_isdst=x.tm_gmtoff=0;
 #if defined(__dietlibc__) || defined(__GLIBC__)
   t->tv_sec=timegm(&x);
-#elif defined(__MINGW32__)
+#elif (defined(_WIN32) || defined(_WIN64))
   t->tv_sec=mktime(&x);
 #else
   {

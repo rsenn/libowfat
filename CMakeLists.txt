@@ -18,7 +18,31 @@ include(CheckTypeSize)
 # message("Output: ${CC_OUTPUT}")
 # 
 check_symbol_exists(__MSYS__ "" MSYS)
-message("MSYS: ${MSYS}")
+check_symbol_exists(__CYGWIN__ "" CYGWIN)
+check_symbol_exists(__MINGW32__ "" MINGW32)
+check_symbol_exists(__MINGW64__ "" MINGW64)
+#check_symbol_exists(_MSC_VER "" MSVC)
+
+check_include_file(stdint.h HAVE_STDINT_H)
+check_include_file(inttypes.h HAVE_INTTYPES_H)
+
+if(MSVC)
+  add_definitions(-Dinline=__inline)
+  add_definitions("-D__attribute__(x)=")
+endif()
+
+if(NOT HAVE_STDINT_H OR NOT HAVE_INTTYPES_H)
+  include_directories("${CMAKE_CURRENT_SOURCE_DIR}/inttypes/include")
+  list(APPEND CMAKE_REQUIRED_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/inttypes/include")
+  list(APPEND CMAKE_REQUIRED_FLAGS "-I${CMAKE_CURRENT_SOURCE_DIR}/inttypes/include")
+endif()
+
+function(output_have NAME)
+  if(HAVE_${NAME})
+    message("  ${NAME} enabled")
+  endif(HAVE_${NAME})
+endfunction(output_have NAME)
+
 
 function(write_have_h NAME)
   string(TOLOWER "${ARGV0}" HAVE_H)
@@ -178,13 +202,16 @@ check_type_size(__uint128_t HAVE_UINT128)
 
 write_have_h(UINT128 "#define HAVE_UINT128")
 
+foreach(N SIGIO ALLOCA)
+  output_have(${N})
+endforeach()
+
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}")
 
 try_compile(RCOMP_ENT 
   "${CMAKE_BINARY_DIR}" "${CMAKE_SOURCE_DIR}/ent.c"
-  CMAKE_FLAGS "-DINCLUDE_DIRECTORIES=${CMAKE_BINARY_DIR}"
-   "-DLINK_FLAGS=-static" 
-   "-DCOMPILE_DEFINITIONS=\"-I${CMAKE_SOURCE_DIR}\""
+  CMAKE_FLAGS 
+  "-DCOMPILE_DEFINITIONS=-I${CMAKE_SOURCE_DIR} -I${CMAKE_BINARY_DIR} -I../../../../inttypes/include -Iinttypes/include -Dinline=__inline"
      OUTPUT_VARIABLE COMPILE_ENT
   COPY_FILE "${CMAKE_BINARY_DIR}/ent")
 
@@ -245,6 +272,8 @@ set_target_properties(libowfat PROPERTIES
   PREFIX "${DLLPREFIX}"
   SUFFIX "${DLLSUFFIX}"
   DLLVERSION "${DLLVERSION}"
+  IMPORT_PREFIX "${LIBPREFIX}"
+  IMPORT_SUFFIX ".dll${LIBSUFFIX}"
   )
 set_target_properties(libowfat-static PROPERTIES
   OUTPUT_NAME "owfat"
@@ -265,4 +294,3 @@ install(TARGETS libowfat libowfat-static
 set(INCLUDES buffer.h byte.h fmt.h ip4.h ip6.h mmap.h scan.h socket.h str.h uint32.h uint64.h open.h textcode.h tai.h taia.h dns.h readclose.h ndelay.h array.h io.h safemult.h iob.h cdb.h cdb_make.h rangecheck.h iarray.h va_narg.h critbit.h)
 
 install(FILES ${INCLUDES} DESTINATION include/libowfat)
-

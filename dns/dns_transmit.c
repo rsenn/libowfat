@@ -4,7 +4,11 @@
 #else
 #include <sys/socket.h>
 #endif
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #include <stdlib.h>
 #include "socket.h"
 #include <errno.h>

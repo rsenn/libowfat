@@ -1,6 +1,6 @@
 #include <sys/param.h>
 #include <sys/types.h>
-#ifndef __MINGW32__
+#if !(defined(_WIN32) || defined(_WIN64))
 #include <sys/socket.h>
 #include <netinet/in.h>
 #endif

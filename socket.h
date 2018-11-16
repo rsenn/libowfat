@@ -11,6 +11,11 @@
 extern "C" {
 #endif
 
+#if !defined(_SSIZE_T_DEFINED)
+#define _SSIZE_T_DEFINED
+typedef ptrdiff_t ssize_t;
+#endif
+
 int socket_tcp4(void);
 int socket_tcp4b(void);
 int socket_udp4(void);
@@ -100,7 +105,7 @@ ssize_t socket_fastopen_connect4(int s,const char* ip,uint16 port,const char* bu
 ssize_t socket_fastopen_connect6(int s,const char* ip,uint16 port,uint32 scope_id,const char* buf,size_t len);
 
 
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
 #include <winsock2.h>
 #include <ws2tcpip.h>
 

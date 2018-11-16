@@ -1,5 +1,9 @@
 #include <sys/types.h>
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #ifndef __MINGW32__
 #include <sys/socket.h>
 #include <netinet/in.h>

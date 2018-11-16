@@ -13,6 +13,11 @@
 extern "C" {
 #endif
 
+#if !defined(_SSIZE_T_DEFINED)
+#define _SSIZE_T_DEFINED
+typedef ptrdiff_t ssize_t;
+#endif
+
 typedef struct buffer {
   char *x;		/* actual buffer space */
   size_t p;		/* current position */
