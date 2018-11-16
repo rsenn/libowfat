@@ -1,6 +1,6 @@
-#include "errmsg.h"
-#include "errmsg_int.h"
-#include <str.h>
+#include "../errmsg.h"
+#include "../errmsg_int.h"
+#include "../str.h"
 
 #if defined(_WIN32) || defined(_WIN64)
 

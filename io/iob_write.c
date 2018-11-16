@@ -1,4 +1,4 @@
-#include <iob_internal.h>
+#include "../iob_internal.h"
 
 int64 iob_write(int64 s,io_batch* b,io_write_callback cb) {
   iob_entry* e,* last;

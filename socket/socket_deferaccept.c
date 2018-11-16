@@ -1,4 +1,4 @@
-#include "socket.h"
+#include "../socket.h"
 
 #include <sys/types.h>
 #if !(defined(_WIN32) || defined(_WIN64))
@@ -6,8 +6,8 @@
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #endif
-#include "windoze.h"
-#include "socket.h"
+#include "../windoze.h"
+#include "../socket.h"
 #include <string.h>
 
 void socket_deferaccept(int s,enum defermode mode) {

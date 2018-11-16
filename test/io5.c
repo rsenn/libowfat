@@ -1,7 +1,7 @@
-#include "socket.h"
-#include "io.h"
-#include "buffer.h"
-#include "ip6.h"
+#include "../socket.h"
+#include "../io.h"
+#include "../buffer.h"
+#include "../ip6.h"
 #include <errno.h>
 
 int main() {

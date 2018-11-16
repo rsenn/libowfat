@@ -1,6 +1,6 @@
-#include "byte.h"
+#include "../byte.h"
 #include <assert.h>
-#include "errmsg.h"
+#include "../errmsg.h"
 #include <string.h>
 
 char buf[4096];

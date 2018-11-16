@@ -3,8 +3,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #endif
-#include "windoze.h"
-#include "socket.h"
+#include "../windoze.h"
+#include "../socket.h"
 #include "havesl.h"
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -12,7 +12,7 @@
 #include <mswsock.h>
 #include <errno.h>
 #include <stdio.h>
-#include "io_internal.h"
+#include "../io_internal.h"
 #endif
 
 int socket_accept4(int s,char *ip,uint16 *port) {

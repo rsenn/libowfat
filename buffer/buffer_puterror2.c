@@ -1,4 +1,4 @@
-#include "buffer.h"
+#include "../buffer.h"
 #include <string.h>
 
 int buffer_puterror2(buffer* b,int errnum) {

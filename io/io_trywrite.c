@@ -4,15 +4,15 @@
 #include <unistd.h>
 #endif
 #include <sys/time.h>
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #else
 #include <poll.h>
 #endif
 #include <errno.h>
-#include "io_internal.h"
+#include "../io_internal.h"
 
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
 #include <stdio.h>
 
 /* All the Unix trickery is unsupported on Windows.  Instead, one is

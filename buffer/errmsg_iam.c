@@ -1,4 +1,4 @@
-#include "errmsg.h"
+#include "../errmsg.h"
 
 const char* argv0;
 

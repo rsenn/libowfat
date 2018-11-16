@@ -1,6 +1,6 @@
-#include "ip6.h"
+#include "../ip6.h"
 #include "haveinline.h"
-#include "fmt.h"
+#include "../fmt.h"
 
 size_t fmt_ip6_flat(char *s,const char ip[16])
 {

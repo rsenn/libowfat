@@ -1,4 +1,4 @@
-#include "cdb.h"
+#include "../cdb.h"
 
 static int doit(struct cdb *c,uint32 *kpos) {
   unsigned char buf[8];

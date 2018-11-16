@@ -4,8 +4,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #endif
-#include "socket.h"
-#include "ndelay.h"
+#include "../socket.h"
+#include "../ndelay.h"
 #include <errno.h>
 
 int socket_tcp4(void) {

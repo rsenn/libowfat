@@ -4,10 +4,10 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #endif
-#include "windoze.h"
+#include "../windoze.h"
 
-#include "socket.h"
-#include "ndelay.h"
+#include "../socket.h"
+#include "../ndelay.h"
 
 int socket_udp4b(void) {
   int s;

@@ -145,7 +145,7 @@ int64 io_mmapwritefile(int64 out,int64 in,uint64 off,uint64 bytes,io_write_callb
 unsigned int io_debugstring(int64 s,char* buf,unsigned int bufsize);
 
 #if defined(_WIN32) || defined(_WIN64)
-#include_next <io.h>
+#include <io.h>
 #endif
 
 #ifdef __cplusplus

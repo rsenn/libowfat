@@ -8,9 +8,9 @@
 #include <unistd.h>
 #endif
 #include <errno.h>
-#include "byte.h"
-#include "cdb.h"
-#ifdef __MINGW32__
+#include "../byte.h"
+#include "../cdb.h"
+#if defined(_WIN32) || defined(_WIN64)
 #include "windows.h"
 #else
 #include <sys/mman.h>
@@ -18,7 +18,7 @@
 
 void cdb_free(struct cdb *c) {
   if (c->map) {
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
     UnmapViewOfFile(c->map);
 #else
     munmap(c->map,c->size);
@@ -32,7 +32,7 @@ void cdb_findstart(struct cdb *c) {
 }
 
 void cdb_init(struct cdb *c,int64 fd) {
-#ifndef __MINGW32__
+#if !(defined(_WIN32) || defined(_WIN64))
   struct stat st;
   char *x;
 #endif
@@ -41,7 +41,7 @@ void cdb_init(struct cdb *c,int64 fd) {
   cdb_findstart(c);
   c->fd = fd;
 
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
   {
     HANDLE m=CreateFileMapping((HANDLE)(uintptr_t)fd,0,PAGE_READONLY,0,0,NULL);
     if (m)

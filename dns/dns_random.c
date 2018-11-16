@@ -3,9 +3,9 @@
 #else
 #include <unistd.h>
 #endif
-#include "dns.h"
-#include "taia.h"
-#include "uint32.h"
+#include "../dns.h"
+#include "../taia.h"
+#include "../uint32.h"
 
 static uint32 seed[32];
 static uint32 in[12];
@@ -49,7 +49,7 @@ void dns_random_init(const char data[128])
     uint32_unpack(tpack + 4 * i,in + 4 + i);
 
   in[8] = getpid();
-#ifndef __MINGW32__
+#if !(defined(_WIN32) || defined(_WIN64))
   in[9] = getppid();
 #endif
   /* more space in 10 and 11, but this is probably enough */

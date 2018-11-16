@@ -1,9 +1,9 @@
 #define _GNU_SOURCE
 #include <errno.h>
 #define my_extern
-#include "io_internal.h"
+#include "../io_internal.h"
 #undef my_extern
-#include "byte.h"
+#include "../byte.h"
 #ifdef HAVE_SIGIO
 #include <signal.h>
 #include <fcntl.h>

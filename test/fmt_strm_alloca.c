@@ -1,6 +1,6 @@
 #include <stdlib.h>
-#include "fmt.h"
-#include "byte.h"
+#include "../fmt.h"
+#include "../byte.h"
 #include <assert.h>
 
 int main() {

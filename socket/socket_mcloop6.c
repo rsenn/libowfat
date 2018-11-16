@@ -1,11 +1,11 @@
 #include <sys/types.h>
-#include <sys/param.h>
 #if !(defined(_WIN32) || defined(_WIN64))
+#include <sys/param.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #endif
-#include "windoze.h"
-#include "socket.h"
+#include "../windoze.h"
+#include "../socket.h"
 #include "haveip6.h"
 
 int socket_mcloop6(int s,char loop)

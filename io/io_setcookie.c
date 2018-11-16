@@ -4,7 +4,7 @@
 #else
 #include <unistd.h>
 #endif
-#include "io_internal.h"
+#include "../io_internal.h"
 
 void io_setcookie(int64 d,void* cookie) {
   io_entry* e;

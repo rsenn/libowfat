@@ -1,8 +1,8 @@
 #include <stdarg.h>
 #include <sys/types.h>
-#include "errmsg.h"
-#include "errmsg_int.h"
-#include "str.h"
+#include "../errmsg.h"
+#include "../errmsg_int.h"
+#include "../str.h"
 
 void errmsg_warn(const char* message, ...) {
   va_list a;

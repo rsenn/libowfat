@@ -3,7 +3,7 @@
 #else
 #include <unistd.h>
 #endif
-#include "io_internal.h"
+#include "../io_internal.h"
 
 void* io_getcookie(int64 d) {
   io_entry* e;

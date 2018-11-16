@@ -1,11 +1,11 @@
-#include <socket.h>
+#include "../socket.h"
 
-#include "socket.h"
-#include "buffer.h"
+#include "../socket.h"
+#include "../buffer.h"
 #include <unistd.h>
 #include <stdio.h>
-#include "case.h"
-#include "ndelay.h"
+#include "../case.h"
+#include "../ndelay.h"
 
 int main(int argc,char* argv[]) {
   int s=socket_tcp4b();

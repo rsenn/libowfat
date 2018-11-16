@@ -1,8 +1,8 @@
 #define _GNU_SOURCE
 #define __deprecated__
-#include "scan.h"
-#include "byte.h"
-#include "case.h"
+#include "../scan.h"
+#include "../byte.h"
+#include "../case.h"
 #include <time.h>
 #include <stdlib.h>
 
@@ -38,7 +38,11 @@ size_t scan_iso8601(const char* in,struct timespec* t) {
     }
   }
 
-  x.tm_wday=x.tm_yday=x.tm_isdst=x.tm_gmtoff=0;
+  x.tm_wday=x.tm_yday=x.tm_isdst=0;
+#if !(defined(_WIN32) || defined(_WIN64))
+  x.tm_gmtoff=0;
+#endif
+  
 #if defined(__dietlibc__) || defined(__GLIBC__)
   t->tv_sec=timegm(&x);
 #elif (defined(_WIN32) || defined(_WIN64))

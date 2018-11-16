@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "critbit.h"
+#include "../critbit.h"
 
 typedef struct {
   void* child[2];

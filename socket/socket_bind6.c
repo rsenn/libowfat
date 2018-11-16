@@ -5,10 +5,10 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #endif
-#include "windoze.h"
-#include "ip6.h"
-#include "byte.h"
-#include "socket.h"
+#include "../windoze.h"
+#include "../ip6.h"
+#include "../byte.h"
+#include "../socket.h"
 
 int socket_bind6(int s,const char ip[16],uint16 port,uint32 scope_id)
 {

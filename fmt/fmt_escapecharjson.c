@@ -1,4 +1,4 @@
-#include "fmt.h"
+#include "../fmt.h"
 
 static void fmt_hex4(char* dest,uint16_t w) {
   dest[3]=fmt_tohex(w&0xf); w>>=4;

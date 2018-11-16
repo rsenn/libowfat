@@ -1,6 +1,6 @@
-#include "byte.h"
-#include "fmt.h"
-#include "dns.h"
+#include "../byte.h"
+#include "../fmt.h"
+#include "../dns.h"
 #include "haveinline.h"
 
 /* RFC1886:

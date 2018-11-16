@@ -1,5 +1,5 @@
-#include "scan.h"
-#include "ip4.h"
+#include "../scan.h"
+#include "../ip4.h"
 
 size_t scan_ip4(const char *s,char ip[4])
 {

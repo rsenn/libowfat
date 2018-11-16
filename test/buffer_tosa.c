@@ -1,6 +1,6 @@
-#include "byte.h"
-#include "stralloc.h"
-#include "buffer.h"
+#include "../byte.h"
+#include "../stralloc.h"
+#include "../buffer.h"
 #include <assert.h>
 
 int main() {

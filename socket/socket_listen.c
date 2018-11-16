@@ -1,12 +1,12 @@
 #include <sys/types.h>
 #if defined(_WIN32) || defined(_WIN64)
-#include "io_internal.h"
+#include "../io_internal.h"
 #include <mswsock.h>
 #else
 #include <sys/socket.h>
 #endif
-#include "socket.h"
-#include "windoze.h"
+#include "../socket.h"
+#include "../windoze.h"
 
 int socket_listen(int s,unsigned int backlog) {
 #if defined(_WIN32) || defined(_WIN64)

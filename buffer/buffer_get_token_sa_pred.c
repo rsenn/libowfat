@@ -1,6 +1,6 @@
-#include "byte.h"
-#include "stralloc.h"
-#include "buffer.h"
+#include "../byte.h"
+#include "../stralloc.h"
+#include "../buffer.h"
 #include <errno.h>
 
 int buffer_get_token_sa_pred(buffer* b,stralloc* sa,sa_predicate p) {

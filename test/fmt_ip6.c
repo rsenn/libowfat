@@ -1,4 +1,4 @@
-#include "ip6.h"
+#include "../ip6.h"
 #include <assert.h>
 
 int main() {

@@ -1,4 +1,4 @@
-#include "CAS.h"
+#include "../CAS.h"
 #include <assert.h>
 
 int main() {

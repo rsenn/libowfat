@@ -5,7 +5,7 @@
 #include <unistd.h>
 #endif
 #include <fcntl.h>
-#include "io_internal.h"
+#include "../io_internal.h"
 
 int io_readfile(int64* d,const char* s) {
   long fd=open(s,O_RDONLY);

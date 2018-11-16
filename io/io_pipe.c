@@ -3,10 +3,10 @@
 #else
 #include <unistd.h>
 #endif
-#include "io_internal.h"
+#include "../io_internal.h"
 
 int io_pipe(int64* d) {
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
   HANDLE fds[2];
   if (CreatePipe(fds,fds+1,0,0)==0)
     return 0;

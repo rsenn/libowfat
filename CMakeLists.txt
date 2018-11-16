@@ -31,10 +31,12 @@ if(MSVC)
   add_definitions("-D__attribute__(x)=")
 endif()
 
+if(MSVC)
 if(NOT HAVE_STDINT_H OR NOT HAVE_INTTYPES_H)
   include_directories("${CMAKE_CURRENT_SOURCE_DIR}/inttypes/include")
   list(APPEND CMAKE_REQUIRED_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/inttypes/include")
   list(APPEND CMAKE_REQUIRED_FLAGS "-I${CMAKE_CURRENT_SOURCE_DIR}/inttypes/include")
+endif()
 endif()
 
 function(output_have NAME)
@@ -206,7 +208,18 @@ foreach(N SIGIO ALLOCA)
   output_have(${N})
 endforeach()
 
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}")
+include_directories("${CMAKE_CURRENT_BINARY_DIR}")
+
+set(INCDIR "${CMAKE_CURRENT_BINARY_DIR}/libowfat")
+file(MAKE_DIRECTORY "${INCDIR}")
+foreach(H array buffer byte case cdb cdb_make compiletimeassert critbit dns errmsg fmt iarray io iob ip4 ip6 isset mmap ndelay open openreadclose rangecheck readclose safemult scan socket str stralloc tai taia textcode uint16 uint32 uint64 va_narg)
+  configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${H}.h" "${INCDIR}/${H}.h" COPYONLY)
+  list(APPEND INCLUDES "libowfat/${H}.h")
+endforeach()
+foreach(H iopause select entities)
+  configure_file("${CMAKE_CURRENT_BINARY_DIR}/${H}.h" "${INCDIR}/${H}.h" COPYONLY)
+  list(APPEND INCLUDES "libowfat/${H}.h")
+endforeach()
 
 try_compile(RCOMP_ENT 
   "${CMAKE_BINARY_DIR}" "${CMAKE_SOURCE_DIR}/ent.c"
@@ -291,6 +304,5 @@ install(TARGETS libowfat libowfat-static
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
 )
-set(INCLUDES buffer.h byte.h fmt.h ip4.h ip6.h mmap.h scan.h socket.h str.h uint32.h uint64.h open.h textcode.h tai.h taia.h dns.h readclose.h ndelay.h array.h io.h safemult.h iob.h cdb.h cdb_make.h rangecheck.h iarray.h va_narg.h critbit.h)
 
 install(FILES ${INCLUDES} DESTINATION include/libowfat)

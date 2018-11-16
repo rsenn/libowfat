@@ -4,7 +4,7 @@
 #include <errno.h>
 #include <unistd.h>
 #endif
-#include "buffer.h"
+#include "../buffer.h"
 
 #ifndef __unlikely
 #ifdef __GNUC__

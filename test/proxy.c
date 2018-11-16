@@ -1,12 +1,12 @@
-#include "socket.h"
-#include "io.h"
-#include "buffer.h"
-#include "ip6.h"
-#include "str.h"
-#include "dns.h"
+#include "../socket.h"
+#include "../io.h"
+#include "../buffer.h"
+#include "../ip6.h"
+#include "../str.h"
+#include "../dns.h"
 #include <errno.h>
 #include <getopt.h>
-#include "scan.h"
+#include "../scan.h"
 #include <stdlib.h>
 
 struct state {

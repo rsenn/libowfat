@@ -1,4 +1,4 @@
-#include "rangecheck.h"
+#include "../rangecheck.h"
 #include <assert.h>
 #include <stdio.h>
 #include <inttypes.h>

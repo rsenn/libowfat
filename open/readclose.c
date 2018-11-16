@@ -4,7 +4,7 @@
 #include <unistd.h>
 #endif
 #include <errno.h>
-#include "readclose.h"
+#include "../readclose.h"
 
 ssize_t readclose_append(int fd,stralloc *sa,size_t bufsize)
 {

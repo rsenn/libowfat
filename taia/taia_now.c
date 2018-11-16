@@ -1,5 +1,5 @@
 #include <sys/types.h>
-#include "taia.h"
+#include "../taia.h"
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #include <time.h>

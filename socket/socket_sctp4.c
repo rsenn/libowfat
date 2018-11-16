@@ -3,8 +3,8 @@
 #else
 #include <unistd.h>
 #endif
-#include "socket.h"
-#include "ndelay.h"
+#include "../socket.h"
+#include "../ndelay.h"
 
 int socket_sctp4(void) {
   int s=socket_sctp4b();

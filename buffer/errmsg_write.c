@@ -1,6 +1,6 @@
 #include <stdarg.h>
-#include "errmsg.h"
-#include "errmsg_int.h"
+#include "../errmsg.h"
+#include "../errmsg_int.h"
 
 void errmsg_write(int fd,const char* err,const char* message,va_list list) {
   errmsg_start(fd);

@@ -1,14 +1,14 @@
 #include <sys/types.h>
-#include <sys/param.h>
 #if !(defined(_WIN32) || defined(_WIN64))
+#include <sys/param.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #endif
-#include "windoze.h"
-#include "socket.h"
-#include "byte.h"
+#include "../windoze.h"
+#include "../socket.h"
+#include "../byte.h"
 #include "haveip6.h"
-#include "ip6.h"
+#include "../ip6.h"
 
 #ifndef IPV6_MULTICAST_HOPS
 #undef LIBC_HAS_IP6

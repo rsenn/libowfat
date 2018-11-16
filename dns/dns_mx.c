@@ -1,7 +1,7 @@
-#include "stralloc.h"
-#include "byte.h"
-#include "uint16.h"
-#include "dns.h"
+#include "../stralloc.h"
+#include "../byte.h"
+#include "../uint16.h"
+#include "../dns.h"
 
 static char *q = 0;
 

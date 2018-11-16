@@ -1,5 +1,5 @@
 #include <string.h>
-#include "buffer.h"
+#include "../buffer.h"
 #ifdef __x86_64__
 #include <x86intrin.h>
 #endif

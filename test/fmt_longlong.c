@@ -1,8 +1,8 @@
-#include <fmt.h>
-#include <str.h>
+#include "../fmt.h"
+#include "../str.h"
 #include <assert.h>
-#include <scan.h>
-#include <byte.h>
+#include "../scan.h"
+#include "../byte.h"
 
 int main() {
   char buf[1024];

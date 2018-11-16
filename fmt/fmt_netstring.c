@@ -1,5 +1,5 @@
-#include "fmt.h"
-#include "rangecheck.h"
+#include "../fmt.h"
+#include "../rangecheck.h"
 #include <string.h>
 
 size_t fmt_netstring(char* dest,const char* src,size_t len) {

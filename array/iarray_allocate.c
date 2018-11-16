@@ -1,11 +1,11 @@
-#include "likely.h"
+#include "../likely.h"
 #include <stdlib.h>
 #if !(defined(_WIN32) || defined(_WIN64))
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <unistd.h>
 #endif
-#include "iarray.h"
+#include "../iarray.h"
 #ifdef __dietlibc__
 #include <sys/atomic.h>
 #else

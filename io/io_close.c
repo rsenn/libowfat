@@ -4,12 +4,12 @@
 #include <unistd.h>
 #endif
 #include <sys/types.h>
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #else
 #include <sys/mman.h>
 #endif
-#include "io_internal.h"
+#include "../io_internal.h"
 
 extern void io_dontwantread_really(int64 d,io_entry* e);
 extern void io_dontwantwrite_really(int64 d,io_entry* e);
@@ -22,7 +22,7 @@ void io_close(int64 d) {
     if (e->kernelwantread) io_dontwantread_really(d,e);
     if (e->kernelwantwrite) io_dontwantwrite_really(d,e);
     if (e->mmapped) {
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
       UnmapViewOfFile(e->mmapped);
       CloseHandle(e->mh);
 #else

@@ -1,12 +1,12 @@
-#include "scan.h"
-#include "ip6.h"
-#include "str.h"
+#include "../scan.h"
+#include "../ip6.h"
+#include "../str.h"
 #include <errno.h>
 #include <string.h>
 #include <sys/poll.h>
 #include <unistd.h>
-#include "socket.h"
-#include "ndelay.h"
+#include "../socket.h"
+#include "../ndelay.h"
 #include <sys/socket.h>
 #ifdef __dietlibc__
 #include <write12.h>

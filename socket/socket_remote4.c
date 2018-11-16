@@ -1,12 +1,12 @@
 #include <sys/types.h>
-#include <sys/param.h>
 #if !(defined(_WIN32) || defined(_WIN64))
+#include <sys/param.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #endif
-#include "windoze.h"
-#include "byte.h"
-#include "socket.h"
+#include "../windoze.h"
+#include "../byte.h"
+#include "../socket.h"
 #include "havesl.h"
 
 int socket_remote4(int s,char ip[4],uint16 *port)

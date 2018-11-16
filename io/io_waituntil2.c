@@ -1,4 +1,4 @@
-#include "io_internal.h"
+#include "../io_internal.h"
 #ifdef HAVE_EPOLL
 #define _XOPEN_SOURCE
 #endif
@@ -29,7 +29,7 @@
 #endif
 
 #ifdef __dietlibc__
-#include <fmt.h>
+#include "../fmt.h"
 #include <write12.h>
 #endif
 

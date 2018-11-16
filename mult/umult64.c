@@ -1,6 +1,6 @@
 #if defined(__GNUC__) && (__GNUC__ >= 5)
 
-#include "uint64.h"
+#include "../uint64.h"
 
 int umult64(uint64 a,uint64 b,uint64* c) { return !__builtin_mul_overflow(a,b,c); }
 
@@ -29,7 +29,7 @@ void umult64() {
 
 #else
 
-#include "safemult.h"
+#include "../safemult.h"
 
 #if defined(HAVE_UINT128)
 

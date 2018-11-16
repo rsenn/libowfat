@@ -2,8 +2,8 @@
 #if !(defined(_WIN32) || defined(_WIN64))
 #include <sys/socket.h>
 #endif
-#include "windoze.h"
-#include "socket.h"
+#include "../windoze.h"
+#include "../socket.h"
 
 void socket_tryreservein(int s,int size)
 {

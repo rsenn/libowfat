@@ -3,8 +3,8 @@
 #include <windows.h>
 #include <mswsock.h>
 #include <errno.h>
-#include "io_internal.h"
-#include "iob_internal.h"
+#include "../io_internal.h"
+#include "../iob_internal.h"
 #include <stdio.h>
 
 int64 iob_send(int64 s,io_batch* b) {
@@ -119,7 +119,7 @@ int64 iob_send(int64 s,io_batch* b) {
 #include <unistd.h>
 #include <string.h>
 #include "havealloca.h"
-#include "iob_internal.h"
+#include "../iob_internal.h"
 
 int64 iob_send(int64 s,io_batch* b) {
   iob_entry* e,* last;

@@ -1,5 +1,5 @@
-#include <io_internal.h>
-#include <iob.h>
+#include "../io_internal.h"
+#include "../iob.h"
 #include <unistd.h>
 #include <sys/types.h>
 #if defined(_WIN32) || defined(_WIN64)

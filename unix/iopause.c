@@ -1,4 +1,4 @@
-#include "taia.h"
+#include "../taia.h"
 #include "iopause.h"
 #if defined(_WIN32) || defined(_WIN64)
 #include <winsock2.h>

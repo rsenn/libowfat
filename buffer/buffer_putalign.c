@@ -1,5 +1,5 @@
-#include "byte.h"
-#include "buffer.h"
+#include "../byte.h"
+#include "../buffer.h"
 
 int buffer_putalign(buffer* b,const char* buf,size_t len) {
   size_t tmp;

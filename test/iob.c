@@ -1,6 +1,6 @@
 #include <assert.h>
-#include "iob.h"
-#include "buffer.h"
+#include "../iob.h"
+#include "../buffer.h"
 #include <unistd.h>
 
 static int64 write_cb(int64 fd,const void* buf,uint64 len) {
