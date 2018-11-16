@@ -11,14 +11,8 @@ include(CheckSymbolExists)
 include(CheckStructHasMember)
 include(CheckTypeSize)
 
-# exec_program("${CMAKE_C_COMPILER}"
-#   ARGS "-dumpmachine"
-#   OUTPUT_VARIABLE CC_OUTPUT
-#   RETURN_VALUE CC_RETVAL)
-# message("Output: ${CC_OUTPUT}")
-# 
 check_symbol_exists(__MSYS__ "" MSYS)
-message("MSYS: ${MSYS}")
+#message("MSYS: ${MSYS}")
 
 function(write_have_h NAME)
   string(TOLOWER "${ARGV0}" HAVE_H)
@@ -132,9 +126,9 @@ check_function_exists(sendfile HAVE_SENDFILE)
 write_have_h(SENDFILE "#define HAVE_SENDFILE")
 
 ### Checks for sigio (trysigio.c)
-check_include_file(sys/poll.h SYS_POLL_H)
+#check_include_file(sys/poll.h SYS_POLL_H)
 #check_include_file(sys/types.h SYS_TYPES_H)
-check_symbol_exists(SIGIO "sys/types.h;signal.h" HAVE_SIGIO)
+check_symbol_exists(F_SETSIG "sys/types.h;signal.h" HAVE_SIGIO)
 
 write_have_h(SIGIO "#define HAVE_SIGIO")
 
@@ -230,25 +224,39 @@ set(DLLVERSION "1")
 if(MSYS)
   set(DLLPREFIX "msys-")
   set(DLLSUFFIX "-${DLLVERSION}.dll")
+  set(IMPPREFIX "lib")
+  set(IMPSUFFIX ".dll.a")
   set(LIBPREFIX "lib")
   set(LIBSUFFIX ".a")
 endif(MSYS)
 if(CYGWIN)
   set(DLLPREFIX "cyg")
   set(DLLSUFFIX "-${DLLVERSION}.dll")
+  set(IMPPREFIX "lib")
+  set(IMPSUFFIX ".dll.a")
   set(LIBPREFIX "lib")
   set(LIBSUFFIX ".a")
 endif(CYGWIN)
+if(MINGW)
+  set(DLLPREFIX "lib")
+  set(DLLSUFFIX "-${DLLVERSION}.dll")
+  set(IMPPREFIX "lib")
+  set(IMPSUFFIX ".dll.a")
+  set(LIBPREFIX "lib")
+  set(LIBSUFFIX ".a")
+endif(MINGW)
 
 set_target_properties(libowfat PROPERTIES
   OUTPUT_NAME "owfat"
   PREFIX "${DLLPREFIX}"
   SUFFIX "${DLLSUFFIX}"
   DLLVERSION "${DLLVERSION}"
+  IMPORT_PREFIX "${IMPPREFIX}"
+  IMPORT_SUFFIX "${IMPSUFFIX}"
   )
 set_target_properties(libowfat-static PROPERTIES
   OUTPUT_NAME "owfat"
-  PREFIX "${LIBPREFIX}"
+  PREFIX "${LIBPREFIX}"  
   SUFFIX "${LIBSUFFIX}"
   )
 
