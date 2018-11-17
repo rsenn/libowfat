@@ -1,5 +1,5 @@
-#include "byte.h"
-#include "buffer.h"
+#include "../byte.h"
+#include "../buffer.h"
 
 ssize_t buffer_getn(buffer* b,char* x,size_t len) {
   size_t blen;

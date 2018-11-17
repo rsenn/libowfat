@@ -1,6 +1,6 @@
-#include "fmt.h"
-#include "textcode.h"
-#include "str.h"
+#include "../fmt.h"
+#include "../textcode.h"
+#include "../str.h"
 #include "haveinline.h"
 
 static inline int issafe(unsigned char c) {

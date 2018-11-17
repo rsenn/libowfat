@@ -1,6 +1,6 @@
 #include <unistd.h>
-#include "buffer.h"
-#include "io.h"
+#include "../buffer.h"
+#include "../io.h"
 
 int main() {
   int64 pfd[2];

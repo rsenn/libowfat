@@ -1,6 +1,6 @@
-#include "iob_internal.h"
+#include "../iob_internal.h"
 
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
 
 /* not supported */
 void iob_prefetch(io_batch* b,uint64 bytes) {

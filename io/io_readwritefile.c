@@ -1,7 +1,11 @@
 #define _FILE_OFFSET_BITS 64
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #include <fcntl.h>
-#include "io_internal.h"
+#include "../io_internal.h"
 
 int io_readwritefile(int64* d,const char* s) {
   long fd=open(s,O_RDWR);

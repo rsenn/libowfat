@@ -1,5 +1,9 @@
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#else
 #include <unistd.h>
-#include "io_internal.h"
+#endif
+#include "../io_internal.h"
 
 void* io_getcookie(int64 d) {
   io_entry* e;

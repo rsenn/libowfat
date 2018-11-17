@@ -1,8 +1,8 @@
 #include <assert.h>
-#include <uint16.h>
-#include <uint32.h>
-#include <uint64.h>
-#include <byte.h>
+#include "../uint16.h"
+#include "../uint32.h"
+#include "../uint64.h"
+#include "../byte.h"
 
 int main() {
   char buf[8];

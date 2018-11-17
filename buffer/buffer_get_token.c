@@ -1,6 +1,6 @@
-#include "byte.h"
-#include "buffer.h"
-#include "scan.h"
+#include "../byte.h"
+#include "../buffer.h"
+#include "../scan.h"
 
 #include <string.h>	/* for memccpy */
 

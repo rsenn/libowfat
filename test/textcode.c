@@ -1,5 +1,5 @@
-#include "array.h"
-#include "textcode.h"
+#include "../array.h"
+#include "../textcode.h"
 #include <assert.h>
 #include <unistd.h>
 

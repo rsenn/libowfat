@@ -1,23 +1,23 @@
-#include <sys/param.h>
+#include "../io_internal.h"
 #include <sys/types.h>
-#ifndef __MINGW32__
+#if !(defined(_WIN32) || defined(_WIN64))
+#include <sys/param.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #endif
-#include "windoze.h"
-#include "byte.h"
-#include "socket.h"
-#include "ip6.h"
+#include "../windoze.h"
+#include "../byte.h"
+#include "../socket.h"
+#include "../ip6.h"
 #include "haveip6.h"
 #include "havesl.h"
 #include "havescope.h"
 
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #include <mswsock.h>
 #include <errno.h>
 #include <stdio.h>
-#include "io_internal.h"
 #endif
 
 int socket_accept6(int s,char* ip,uint16* port,uint32* scope_id)
@@ -30,7 +30,7 @@ int socket_accept6(int s,char* ip,uint16* port,uint32* scope_id)
   socklen_t dummy = sizeof sa;
   int fd;
 
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
   io_entry* e=array_get(&io_fds,sizeof(io_entry),s);
   if (e && e->inuse) {
     int sa2len;
@@ -82,7 +82,7 @@ incoming:
     fd = accept(s,(struct sockaddr *) &sa,&dummy);
     if (fd == -1)
       return winsock2errno(-1);
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
   }
 #endif
 

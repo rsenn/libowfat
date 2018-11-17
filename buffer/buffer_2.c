@@ -1,5 +1,9 @@
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#else
 #include <unistd.h>
-#include "buffer.h"
+#endif
+#include "../buffer.h"
 
 char buffer_2_space[BUFFER_INSIZE];
 static buffer it = BUFFER_INIT(write,2,buffer_2_space,sizeof buffer_2_space);

@@ -1,6 +1,6 @@
 #include <assert.h>
-#include "array.h"
-#include "byte.h"
+#include "../array.h"
+#include "../byte.h"
 
 int main() {
   static array x,y;

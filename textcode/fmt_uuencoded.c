@@ -1,5 +1,5 @@
-#include "fmt.h"
-#include "textcode.h"
+#include "../fmt.h"
+#include "../textcode.h"
 #include "haveinline.h"
 
 static inline unsigned int enc(unsigned char x) {

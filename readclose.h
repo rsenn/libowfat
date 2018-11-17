@@ -10,6 +10,11 @@
 extern "C" {
 #endif
 
+#if !defined(_SSIZE_T_DEFINED)
+#define _SSIZE_T_DEFINED
+typedef ptrdiff_t ssize_t;
+#endif
+
 ssize_t readclose_append(int fd,stralloc *buf,size_t initlen);
 ssize_t readclose(int fd,stralloc *buf,size_t initlen);
 

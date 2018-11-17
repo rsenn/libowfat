@@ -1,4 +1,4 @@
-#include "fmt.h"
+#include "../fmt.h"
 
 /* write int in least amount of bytes, return number of bytes */
 /* as used in varints from Google protocol buffers */
@@ -11,4 +11,8 @@ size_t fmt_varint(char* dest,unsigned long long l) {
   return i;
 }
 
+#ifdef __GNUC__
 size_t fmt_pb_type0_int(char* dest,unsigned long long l) __attribute__((alias("fmt_varint")));
+#else
+size_t fmt_pb_type0_int(char* dest,unsigned long long l) { return fmt_varint(dest, l); }
+#endif

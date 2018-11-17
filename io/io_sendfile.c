@@ -1,6 +1,6 @@
+#include "../io_internal.h"
 /* http://delegate.uec.ac.jp:8081/club/mma/~shimiz98/misc/sendfile.html */
 #define _FILE_OFFSET_BITS 64
-#include "io_internal.h"
 #include "havebsdsf.h"
 #include "havesendfile.h"
 #include <errno.h>
@@ -141,7 +141,7 @@ int64 io_sendfile(int64 s,int64 fd,uint64 off,uint64 n) {
 }
 #endif
 
-#elif defined(__MINGW32__)
+#elif (defined(_WIN32) || defined(_WIN64))
 
 #include <windows.h>
 #include <mswsock.h>
@@ -175,7 +175,7 @@ int64 io_sendfile(int64 out,int64 in,uint64 off,uint64 bytes) {
 
 #else
 
-#include <iob.h>
+#include "../iob.h"
 #include <unistd.h>
 
 static int64 writecb(int64 s,const void* buf,uint64 n) {

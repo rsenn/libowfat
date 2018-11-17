@@ -1,13 +1,15 @@
 #include <sys/types.h>
-#ifndef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#else
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #endif
-#include "windoze.h"
+#include "../windoze.h"
 
-#include "socket.h"
-#include "ndelay.h"
+#include "../socket.h"
+#include "../ndelay.h"
 
 int socket_udp4b(void) {
   int s;

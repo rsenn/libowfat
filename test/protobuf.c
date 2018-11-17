@@ -1,5 +1,5 @@
-#include "fmt.h"
-#include "scan.h"
+#include "../fmt.h"
+#include "../scan.h"
 #include <math.h>
 #include <string.h>
 #include <assert.h>

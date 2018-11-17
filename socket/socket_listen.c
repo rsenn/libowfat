@@ -1,15 +1,15 @@
+#include "../io_internal.h"
 #include <sys/types.h>
-#ifdef __MINGW32__
-#include "io_internal.h"
+#if defined(_WIN32) || defined(_WIN64)
 #include <mswsock.h>
 #else
 #include <sys/socket.h>
 #endif
-#include "socket.h"
-#include "windoze.h"
+#include "../socket.h"
+#include "../windoze.h"
 
 int socket_listen(int s,unsigned int backlog) {
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
   io_entry* e;
   int r = listen(s, backlog);
   if (r==-1) return winsock2errno(-1);

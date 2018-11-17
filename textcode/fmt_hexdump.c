@@ -1,6 +1,6 @@
-#include "fmt.h"
-#include "textcode.h"
-#include "str.h"
+#include "../fmt.h"
+#include "../textcode.h"
+#include "../str.h"
 #include "haveinline.h"
 
 size_t fmt_hexdump(char* dest,const char* src,size_t len) {

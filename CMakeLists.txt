@@ -12,7 +12,78 @@ include(CheckStructHasMember)
 include(CheckTypeSize)
 
 check_symbol_exists(__MSYS__ "" MSYS)
-#message("MSYS: ${MSYS}")
+check_symbol_exists(__CYGWIN__ "" CYGWIN)
+check_symbol_exists(__MINGW32__ "" MINGW32)
+check_symbol_exists(__MINGW64__ "" MINGW64)
+#check_symbol_exists(_MSC_VER "" MSVC)
+
+if(MINGW32 OR MINGW64)
+  set(MINGW TRUE)
+endif()
+
+function(sizeof_type TYPE VAR)
+  check_type_size("${TYPE}" "${VAR}")
+  message("${TYPE} size: ${${VAR}}")
+endfunction()
+
+#sizeof_type("int" INT_SIZE)
+#sizeof_type("long" LONG_SIZE)
+#sizeof_type("long long" LONG_SIZE)
+#sizeof_type("size_t" SIZE_T_SIZE)
+#sizeof_type("ptrdiff_t" PTRDIFF_T_SIZE)
+sizeof_type("void*" VOID_PTR_SIZE)
+
+if(VOID_PTR_SIZE EQUAL 8)
+  set(BITS 64)
+elseif(VOID_PTR_SIZE EQUAL 4)
+  set(BITS 32)
+elseif(VOID_PTR_SIZE EQUAL 2)
+  set(BITS 16)
+endif()
+
+if(MSYS)
+  set(SYSTEM "msys${BITS}")
+elseif(CYGWIN)
+  set(SYSTEM "cygwin${BITS}")
+elseif(MINGW)
+  set(SYSTEM "mingw${BITS}")
+elseif(MSVC OR WIN32 OR WIN64)
+  set(SYSTEM "win${BITS}")
+endif()
+
+if(MSYS OR CYGWIN OR MINGW OR MSVC OR WIN32 OR WIN64)
+set(WINDOWS TRUE)
+endif()
+
+if(WINDOWS)
+  link_libraries(ws2_32 wsock32)
+endif(WINDOWS)
+
+message("SYSTEM: ${SYSTEM}")
+
+check_include_file(stdint.h HAVE_STDINT_H)
+check_include_file(inttypes.h HAVE_INTTYPES_H)
+
+if(MSVC)
+  if(NOT HAVE_STDINT_H OR NOT HAVE_INTTYPES_H)
+    include_directories("${CMAKE_CURRENT_SOURCE_DIR}/inttypes/include")
+    list(APPEND CMAKE_REQUIRED_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/inttypes/include")
+    list(APPEND CMAKE_REQUIRED_FLAGS "-I${CMAKE_CURRENT_SOURCE_DIR}/inttypes/include")
+    set(INTTYPES_CFLAGS "-I../../../../inttypes/include -Iinttypes/include")
+    set(INLINE_CFLAGS "-Dinline=__inline")
+  endif()
+endif()
+if(INLINE_CFLAGS)
+  add_definitions("${INLINE_CFLAGS}")
+endif()
+
+
+function(output_have NAME)
+  if(HAVE_${NAME})
+    message("  ${NAME} enabled")
+  endif(HAVE_${NAME})
+endfunction(output_have NAME)
+
 
 function(write_have_h NAME)
   string(TOLOWER "${ARGV0}" HAVE_H)
@@ -128,7 +199,7 @@ write_have_h(SENDFILE "#define HAVE_SENDFILE")
 ### Checks for sigio (trysigio.c)
 #check_include_file(sys/poll.h SYS_POLL_H)
 #check_include_file(sys/types.h SYS_TYPES_H)
-check_symbol_exists(F_SETSIG "sys/types.h;signal.h" HAVE_SIGIO)
+check_symbol_exists(F_SETSIG "sys/types.h;fcntl.h;signal.h" HAVE_SIGIO)
 
 write_have_h(SIGIO "#define HAVE_SIGIO")
 
@@ -162,8 +233,8 @@ write_have_h(SELECT
 check_function_exists(poll HAVE_POLL)
 
 write_have_h(POLL
-  "/* this header file comes from libowfat, http://www.fefe.de/libowfat/ */\n#ifndef IOPAUSE_H\n#define IOPAUSE_H\n\n/* sysdep: +poll */\n#define IOPAUSE_POLL\n\n#include <sys/types.h>\n#include <sys/poll.h>\n\ntypedef struct pollfd iopause_fd;\n#define IOPAUSE_READ POLLIN\n#define IOPAUSE_WRITE POLLOUT\n\n#include \"taia.h\"\n\nextern void iopause(iopause_fd *,unsigned int,struct taia *,struct taia *);\n\n#endif"
-  "/* this header file comes from libowfat, http://www.fefe.de/libowfat/ */\n#ifndef IOPAUSE_H\n#define IOPAUSE_H\n\n/* sysdep: -poll */\n\ntypedef struct {\n  int fd;\n  short events;\n  short revents;\n} iopause_fd;\n\n#define IOPAUSE_READ 1\n#define IOPAUSE_WRITE 4\n\n#include \"taia.h\"\n\nextern void iopause(iopause_fd *,unsigned int,struct taia *,struct taia *);\n\n#endif"
+  "/* this header file comes from libowfat, http://www.fefe.de/libowfat/ */\n#ifndef IOPAUSE_H\n#define IOPAUSE_H\n\n/* sysdep: +poll */\n#define IOPAUSE_POLL\n\n#include <sys/types.h>\n#include <sys/poll.h>\n\ntypedef struct pollfd iopause_fd;\n#define IOPAUSE_READ POLLIN\n#define IOPAUSE_WRITE POLLOUT\n\n#include \"libowfat/taia.h\"\n\nextern void iopause(iopause_fd *,unsigned int,struct taia *,struct taia *);\n\n#endif"
+  "/* this header file comes from libowfat, http://www.fefe.de/libowfat/ */\n#ifndef IOPAUSE_H\n#define IOPAUSE_H\n\n/* sysdep: -poll */\n\ntypedef struct {\n  int fd;\n  short events;\n  short revents;\n} iopause_fd;\n\n#define IOPAUSE_READ 1\n#define IOPAUSE_WRITE 4\n\n#include \"libowfat/taia.h\"\n\nextern void iopause(iopause_fd *,unsigned int,struct taia *,struct taia *);\n\n#endif"
   "iopause.h")
 
 ### Checks for uint128 (tryuint128.c)
@@ -172,13 +243,16 @@ check_type_size(__uint128_t HAVE_UINT128)
 
 write_have_h(UINT128 "#define HAVE_UINT128")
 
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}")
+foreach(N SIGIO ALLOCA)
+  output_have(${N})
+endforeach()
+
+include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 try_compile(RCOMP_ENT 
   "${CMAKE_BINARY_DIR}" "${CMAKE_SOURCE_DIR}/ent.c"
-  CMAKE_FLAGS "-DINCLUDE_DIRECTORIES=${CMAKE_BINARY_DIR}"
-   "-DLINK_FLAGS=-static" 
-   "-DCOMPILE_DEFINITIONS=\"-I${CMAKE_SOURCE_DIR}\""
+  CMAKE_FLAGS 
+  "-DCOMPILE_DEFINITIONS=-I${CMAKE_BINARY_DIR} ${INTTYPES_CFLAGS} ${INLINE_CFLAGS}"
      OUTPUT_VARIABLE COMPILE_ENT
   COPY_FILE "${CMAKE_BINARY_DIR}/ent")
 
@@ -211,6 +285,17 @@ message(STATUS "Compile 'ent' result: ${RCOMP_ENT}")
 message(STATUS "Compile 'ent' output: ${COMPILE_ENT}")
 message(STATUS "Command 'ent' output: ${OUT_ENT}")
 message(STATUS "Command 'ent' result: ${RESULT_ENT}")
+
+set(INCDIR "${CMAKE_CURRENT_BINARY_DIR}/libowfat")
+file(MAKE_DIRECTORY "${INCDIR}")
+foreach(H array buffer byte case cdb cdb_make compiletimeassert critbit dns errmsg fmt iarray io iob ip4 ip6 isset mmap ndelay open openreadclose rangecheck readclose safemult scan socket str stralloc tai taia textcode uint16 uint32 uint64 va_narg)
+  configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${H}.h" "${INCDIR}/${H}.h" COPYONLY)
+  list(APPEND INCLUDES "${INCDIR}/${H}.h")
+endforeach()
+foreach(H iopause select entities)
+  configure_file("${CMAKE_CURRENT_BINARY_DIR}/${H}.h" "${INCDIR}/${H}.h" COPYONLY)
+  list(APPEND INCLUDES "${INCDIR}/${H}.h")
+endforeach()
 
 
 file(GLOB SOURCES array/*.c buffer/*.c byte/*.c case/*.c cdb/*.c critbit/*.c dns/*.c fmt/*.c io/*.c mmap/*.c mult/*.c open/*.c scan/*.c socket/*.c str/*.c stralloc/*.c tai/*.c taia/*.c textcode/*.c uint/*.c unix/*.c)
@@ -251,8 +336,13 @@ set_target_properties(libowfat PROPERTIES
   PREFIX "${DLLPREFIX}"
   SUFFIX "${DLLSUFFIX}"
   DLLVERSION "${DLLVERSION}"
+<<<<<<< HEAD
   IMPORT_PREFIX "${IMPPREFIX}"
   IMPORT_SUFFIX "${IMPSUFFIX}"
+=======
+  IMPORT_PREFIX "${LIBPREFIX}"
+  IMPORT_SUFFIX ".dll${LIBSUFFIX}"
+>>>>>>> 6e9b7cbb3958772f76e9cc4f684f0bbae032c7f4
   )
 set_target_properties(libowfat-static PROPERTIES
   OUTPUT_NAME "owfat"
@@ -270,7 +360,5 @@ install(TARGETS libowfat libowfat-static
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
 )
-set(INCLUDES buffer.h byte.h fmt.h ip4.h ip6.h mmap.h scan.h socket.h str.h uint32.h uint64.h open.h textcode.h tai.h taia.h dns.h readclose.h ndelay.h array.h io.h safemult.h iob.h cdb.h cdb_make.h rangecheck.h iarray.h va_narg.h critbit.h)
 
 install(FILES ${INCLUDES} DESTINATION include/libowfat)
-

@@ -1,8 +1,8 @@
-#include "stralloc.h"
-#include "case.h"
-#include "byte.h"
-#include "str.h"
-#include "dns.h"
+#include "../stralloc.h"
+#include "../case.h"
+#include "../byte.h"
+#include "../str.h"
+#include "../dns.h"
 
 static int doit(stralloc *work,const char *rule)
 {

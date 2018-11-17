@@ -1,11 +1,15 @@
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #include <stdlib.h>
-#include "taia.h"
-#include "byte.h"
-#include "str.h"
-#include "openreadclose.h"
-#include "dns.h"
-#ifdef __MINGW32__
+#include "../taia.h"
+#include "../byte.h"
+#include "../str.h"
+#include "../openreadclose.h"
+#include "../dns.h"
+#if defined(_WIN32) || defined(_WIN64)
 #include <winsock2.h>
 #endif
 

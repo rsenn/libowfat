@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <errno.h>
-#include "byte.h"
-#include "dns.h"
+#include "../byte.h"
+#include "../dns.h"
 
 int dns_domain_fromdot(char **out,const char *buf,size_t n)
 {

@@ -1,4 +1,4 @@
-#include "iob_internal.h"
+#include "../iob_internal.h"
 
 int iob_addfile(io_batch* b,int64 fd,uint64 off,uint64 n) {
   iob_entry* e;

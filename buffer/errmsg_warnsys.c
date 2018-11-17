@@ -1,8 +1,8 @@
 #include <stdarg.h>
 #include <sys/types.h>
-#include "errmsg.h"
-#include "errmsg_int.h"
-#include "str.h"
+#include "../errmsg.h"
+#include "../errmsg_int.h"
+#include "../str.h"
 #include <string.h>
 #include <errno.h>
 

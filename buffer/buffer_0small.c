@@ -1,5 +1,9 @@
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#else
 #include <unistd.h>
-#include "buffer.h"
+#endif
+#include "../buffer.h"
 
 static ssize_t b0read(int fd,char* buf, size_t len) {
   if (buffer_flush(buffer_1small)<0) return -1;

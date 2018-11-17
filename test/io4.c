@@ -1,5 +1,5 @@
-#include "io.h"
-#include "buffer.h"
+#include "../io.h"
+#include "../buffer.h"
 #include <unistd.h>
 
 int main() {

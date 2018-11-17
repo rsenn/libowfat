@@ -2,6 +2,13 @@
 #ifndef SOCKET_H
 #define SOCKET_H
 
+#if defined(_WIN32) || defined(_WIN64)
+#ifndef _WINSOCKAPI_
+#define _WINSOCKAPI_
+#endif
+#include <winsock2.h>
+#endif
+
 #include <sys/types.h>
 
 #include "uint16.h"
@@ -9,6 +16,11 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+#if !defined(_SSIZE_T_DEFINED)
+#define _SSIZE_T_DEFINED
+typedef ptrdiff_t ssize_t;
 #endif
 
 int socket_tcp4(void);
@@ -100,8 +112,7 @@ ssize_t socket_fastopen_connect4(int s,const char* ip,uint16 port,const char* bu
 ssize_t socket_fastopen_connect6(int s,const char* ip,uint16 port,uint32 scope_id,const char* buf,size_t len);
 
 
-#ifdef __MINGW32__
-#include <winsock2.h>
+#if defined(_WIN32) || defined(_WIN64)
 #include <ws2tcpip.h>
 
 #ifndef EWOULDBLOCK

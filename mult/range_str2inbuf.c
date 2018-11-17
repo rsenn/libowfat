@@ -1,4 +1,5 @@
-#include <rangecheck.h>
+#include "../likely.h"
+#include "../rangecheck.h"
 #include <inttypes.h>
 
 /* does an UTF-16 string starting at "ptr" lie in buf[0..len-1]? */

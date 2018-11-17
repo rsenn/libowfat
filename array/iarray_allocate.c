@@ -1,19 +1,40 @@
-#include "likely.h"
+#include "../likely.h"
 #include <stdlib.h>
-#ifndef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#else
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <unistd.h>
 #endif
-#include "iarray.h"
+#include "../iarray.h"
+
+#if defined(__BORLANDC__) || defined(__ORANGEC__) || defined(__LCC__) || defined(__DMC__)
+#define InterlockedCompareExchangePointer(ptr,newptr,oldptr) InterlockedCompareExchange((long*)ptr,(long)newptr,(long)oldptr)
+#endif
+#ifdef __DMC__
+#define InterlockedCompareExchange(p,n,o) InterlockedCompareExchange((void**)p,(void*)n,(void*)o)
+#endif
+
 #ifdef __dietlibc__
-#include <sys/atomic.h>
+# include <sys/atomic.h>
+#elif defined(_WIN32) || defined(_WIN64) || defined(__MSYS__)
+# include <windows.h>
+# define __CAS(val,oldval,newval) InterlockedCompareExchange(val,newval,oldval)
+#  define __CAS_PTR(ptr,oldptr,newptr) InterlockedCompareExchangePointer(ptr,newptr,oldptr)
+#elif defined(__GNUC__)
+# define __CAS(val,oldval,newval) __sync_val_compare_and_swap(val,oldval,newval)
+# if __SIZEOF_POINTER__ == 4
+#  define __CAS_PTR(ptr,oldptr,newptr) __sync_val_compare_and_swap_4(ptr,oldptr,newptr)
+# else
+#  define __CAS_PTR(ptr,oldptr,newptr) __sync_val_compare_and_swap_8(ptr,oldptr,newptr)
+# endif
 #else
-#define __CAS(ptr,oldval,newval) __sync_val_compare_and_swap(ptr,oldval,newval)
+# warning No atomic operations
 #endif
 
 static iarray_page* new_page(size_t pagesize) {
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
   void* x=malloc(pagesize);
   if (x==0) return 0;
 #else
@@ -49,7 +70,7 @@ void* iarray_allocate(iarray* ia,size_t pos) {
     p=&(*p)->next;
   }
   if (newpage)
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
     free(newpage);
 #else
     munmap(newpage,ia->bytesperpage);

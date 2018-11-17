@@ -1,5 +1,5 @@
-#include "byte.h"
-#include "dns.h"
+#include "../byte.h"
+#include "../dns.h"
 
 /* XXX: sort servers by configurable notion of closeness? */
 /* XXX: pay attention to competence of each server? */

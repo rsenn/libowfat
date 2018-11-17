@@ -1,8 +1,8 @@
 #define _GNU_SOURCE
 #define __deprecated__
-#include "scan.h"
-#include "byte.h"
-#include "case.h"
+#include "../scan.h"
+#include "../byte.h"
+#include "../case.h"
 #include <time.h>
 #include <stdlib.h>
 
@@ -68,7 +68,7 @@ done:
   x.tm_wday=x.tm_yday=x.tm_isdst=0;
 #if defined(__dietlibc__) || defined(__GLIBC__)
   *t=timegm(&x);
-#elif defined(__MINGW32__)
+#elif (defined(_WIN32) || defined(_WIN64))
   *t=mktime(&x);
 #else
   {

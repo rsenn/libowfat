@@ -1,7 +1,11 @@
+#include "../io_internal.h"
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #include <fcntl.h>
 #include <errno.h>
-#include "io_internal.h"
 #ifdef HAVE_KQUEUE
 #include <sys/types.h>
 #include <sys/event.h>
@@ -10,7 +14,7 @@
 #ifdef HAVE_EPOLL
 #include <inttypes.h>
 #include <sys/epoll.h>
-#include <byte.h>
+#include "../byte.h"
 #endif
 #ifdef HAVE_SIGIO
 #include <sys/poll.h>
@@ -20,7 +24,7 @@
 #include <sys/socket.h>
 #include <sys/devpoll.h>
 #endif
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
 #include <mswsock.h>
 #endif
 
@@ -82,7 +86,7 @@ void io_wantread_really(int64 d,io_entry* e) {
     }
   }
 #endif
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
   if (e->listened) {
     if (e->next_accept==0) e->next_accept=socket(AF_INET,SOCK_STREAM,0);
     if (e->next_accept!=-1) {

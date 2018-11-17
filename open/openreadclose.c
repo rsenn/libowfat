@@ -1,7 +1,7 @@
 #include <errno.h>
-#include "open.h"
-#include "readclose.h"
-#include "openreadclose.h"
+#include "../open.h"
+#include "../readclose.h"
+#include "../openreadclose.h"
 
 int openreadclose(const char *fn,stralloc *sa,size_t bufsize)
 {

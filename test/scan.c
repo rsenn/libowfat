@@ -1,6 +1,6 @@
 #include <assert.h>
 #include <limits.h>
-#include "scan.h"
+#include "../scan.h"
 
 int main() {
   unsigned long l;

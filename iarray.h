@@ -11,7 +11,7 @@
 
 #include "uint64.h"
 #include <stddef.h>
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #else
 #include <pthread.h>

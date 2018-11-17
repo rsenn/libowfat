@@ -1,4 +1,4 @@
-#include "fmt.h"
+#include "../fmt.h"
 
 static void fmt_oct3(char* dest,uint8_t w) {
   dest[2]=(char)((w&7)+'0'); w>>=3;

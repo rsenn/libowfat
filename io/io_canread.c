@@ -1,9 +1,14 @@
+#include "../io_internal.h"
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#include <time.h>
+#else
 #include <unistd.h>
 #include <sys/time.h>
+#endif
 #include <errno.h>
-#include "io_internal.h"
 
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
 #include <stdio.h>
 #endif
 
@@ -33,12 +38,12 @@ int64 io_canread() {
     e->next_read=-1;
     debug_printf(("io_canread: dequeue %lld from normal read queue (next is %ld)\n",r,first_readable));
 
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
 //    printf("event on %d: wr %d rq %d aq %d\n",(int)r,e->wantread,e->readqueued,e->acceptqueued);
 #endif
 
     if (e->wantread &&
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
 		       (e->canread || e->acceptqueued==1 || e->readqueued==1)
 #else
 			e->canread

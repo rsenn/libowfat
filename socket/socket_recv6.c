@@ -1,13 +1,13 @@
-#include <sys/param.h>
 #include <sys/types.h>
-#ifndef __MINGW32__
+#if !(defined(_WIN32) || defined(_WIN64))
+#include <sys/param.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #endif
-#include "windoze.h"
-#include "byte.h"
-#include "socket.h"
-#include "ip6.h"
+#include "../windoze.h"
+#include "../byte.h"
+#include "../socket.h"
+#include "../ip6.h"
 #include "haveip6.h"
 #include "havesl.h"
 #include "havescope.h"

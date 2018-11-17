@@ -1,14 +1,16 @@
 #include <stdlib.h>
-#ifndef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#else
+#include <unistd.h>
 #include <sys/mman.h>
 #endif
-#include <unistd.h>
-#include "iarray.h"
+#include "../iarray.h"
 
 static void freechain(iarray_page* p,size_t pagesize) {
   while (p) {
     iarray_page* n=p->next;
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
     free(p);
 #else
     munmap(p,pagesize);

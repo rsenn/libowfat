@@ -1,18 +1,18 @@
-#ifndef __MINGW32__
+#include "../io_internal.h"
+#if !(defined(_WIN32) || defined(_WIN64))
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #endif
-#include "windoze.h"
-#include "socket.h"
+#include "../windoze.h"
+#include "../socket.h"
 #include "havesl.h"
 
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #include <mswsock.h>
 #include <errno.h>
 #include <stdio.h>
-#include "io_internal.h"
 #endif
 
 int socket_accept4(int s,char *ip,uint16 *port) {
@@ -20,7 +20,7 @@ int socket_accept4(int s,char *ip,uint16 *port) {
   socklen_t len = sizeof si;
   int fd;
 
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
   io_entry* e=array_get(&io_fds,sizeof(io_entry),s);
   if (e && e->inuse) {
     int sa2len;
@@ -73,7 +73,7 @@ incoming:
     if ((fd=accept(s,(void*) &si,&len))==-1)
       return winsock2errno(-1);
 
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
   }
 #endif
   if (ip) *(uint32*)ip = *(uint32*)&si.sin_addr;

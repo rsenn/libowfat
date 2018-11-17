@@ -1,10 +1,11 @@
-#include <io_internal.h>
-#include <iob.h>
-#include <unistd.h>
+#include "../io_internal.h"
+#include "../iob.h"
 #include <sys/types.h>
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
+#include <io.h>
 #else
+#include <unistd.h>
 #include <sys/mman.h>
 #endif
 #include <errno.h>
@@ -19,7 +20,7 @@ int64 io_mmapwritefile(int64 out,int64 in,uint64 off,uint64 bytes,io_write_callb
   if (e) {
     const char* c;
     unsigned long left;
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
     if (!e->mh) e->mh=CreateFileMapping(in,0,PAGE_READONLY,0,0,NULL);
     if (!e->mh) goto readwrite;
 #endif
@@ -28,7 +29,7 @@ int64 io_mmapwritefile(int64 out,int64 in,uint64 off,uint64 bytes,io_write_callb
 	/* did we already map the right chunk? */
 	if (off>=e->mapofs && off<e->mapofs+e->maplen)
 	  goto mapok;	/* ok; mmapped the right chunk*/
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
 	UnmapViewOfFile(e->mmapped);
 #else
 	munmap(e->mmapped,e->maplen);
@@ -39,7 +40,7 @@ int64 io_mmapwritefile(int64 out,int64 in,uint64 off,uint64 bytes,io_write_callb
 	e->maplen=off+bytes-e->mapofs;
       else
 	e->maplen=0x10000;
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
       if ((e->mmapped=MapViewOfFile(e->mh,FILE_MAP_READ,(DWORD)(e->mapofs>>32),
 				    (DWORD)e->mapofs,e->maplen))==0)
 #else
@@ -58,7 +59,7 @@ int64 io_mmapwritefile(int64 out,int64 in,uint64 off,uint64 bytes,io_write_callb
 	if (m<0) {
 	  io_eagain(out);
 	  if (errno!=EAGAIN) {
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
 	    UnmapViewOfFile(e->mmapped);
 #else
 	    munmap(e->mmapped,e->maplen);
@@ -82,7 +83,7 @@ int64 io_mmapwritefile(int64 out,int64 in,uint64 off,uint64 bytes,io_write_callb
       }
     } while (bytes);
     if (e->mmapped) {
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
       UnmapViewOfFile(e->mmapped);
 #else
       munmap(e->mmapped,e->maplen);

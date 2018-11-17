@@ -1,7 +1,12 @@
+#include "../io_internal.h"
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#include <time.h>
+#else
 #include <unistd.h>
 #include <sys/time.h>
+#endif
 #include <errno.h>
-#include "io_internal.h"
 
 void io_wantwrite_really(int64 d, io_entry* e);
 
@@ -29,7 +34,7 @@ int64 io_canwrite() {
     e->next_write=-1;
     debug_printf(("io_canwrite: dequeue %lld from normal write queue (next is %ld)\n",r,first_writeable));
     if (e->wantwrite &&
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
                         (e->canwrite || e->sendfilequeued==1)
 #else
                         e->canwrite

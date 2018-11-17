@@ -1,10 +1,10 @@
-#ifdef __MINGW32__
+#include "../io_internal.h"
+#if defined(_WIN32) || defined(_WIN64)
 
 #include <windows.h>
 #include <mswsock.h>
 #include <errno.h>
-#include "io_internal.h"
-#include "iob_internal.h"
+#include "../iob_internal.h"
 #include <stdio.h>
 
 int64 iob_send(int64 s,io_batch* b) {
@@ -49,8 +49,8 @@ int64 iob_send(int64 s,io_batch* b) {
     fprintf(stderr,"found non-sent buffer batch entry at %d\n",i);
     if (x+i+1 < last &&
 	(x[i+1].type==FROMFILE)) {
-      fprintf(stderr,"Next is a file, can use TransmitFile\n",i);
       TRANSMIT_FILE_BUFFERS tfb;
+      fprintf(stderr,"Next is a file, can use TransmitFile\n",i);
       e->sendfilequeued=1;
       memset(&tfb,0,sizeof(tfb));
       memset(&e[i].os,0,sizeof(e[i].os));
@@ -119,7 +119,7 @@ int64 iob_send(int64 s,io_batch* b) {
 #include <unistd.h>
 #include <string.h>
 #include "havealloca.h"
-#include "iob_internal.h"
+#include "../iob_internal.h"
 
 int64 iob_send(int64 s,io_batch* b) {
   iob_entry* e,* last;

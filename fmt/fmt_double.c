@@ -1,22 +1,27 @@
-#include "fmt.h"
+#include "../fmt.h"
 
 size_t fmt_double(char *dest, double d,int maxlen,int prec) {
+  int i, initial,writeok;
+  double tmp;
+  char* oldbuf;
+  signed int s;
+  signed long e, e10;
   union {
     double d;
     unsigned long long x;
-  } __u = { .d=d, };
+  } __u;
+  __u.d = d;
   /* step 1: extract sign, mantissa and exponent */
-  signed int s=__u.x>>63;
-  signed long e=((__u.x>>52)&((1<<11)-1))-1023;
+  s=__u.x>>63;
+  e=((__u.x>>52)&((1<<11)-1))-1023;
 /*  unsigned long long m=*x & ((1ull<<52)-1); */
   /* step 2: exponent is base 2, compute exponent for base 10 */
-  signed long e10=1+(long)(e*0.30102999566398119802); /* log10(2) */
+  e10=1+(long)(e*0.30102999566398119802); /* log10(2) */
   /* step 3: calculate 10^e10 */
-  int i;
-  double tmp=10.0;
-  char *oldbuf=dest;
-  int initial=1;
-  int writeok=(dest!=0);
+  tmp=10.0;
+  oldbuf=dest;
+  initial=1;
+  writeok=(dest!=0);
 
   if (s) { d=-d; if (writeok) *dest='-'; --maxlen; dest++; }
   if (d==0.0) { if (writeok) *dest='0'; --maxlen; dest++; return dest-oldbuf; }

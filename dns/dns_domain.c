@@ -1,7 +1,7 @@
 #include <stdlib.h>
-#include "case.h"
-#include "byte.h"
-#include "dns.h"
+#include "../case.h"
+#include "../byte.h"
+#include "../dns.h"
 
 unsigned int dns_domain_length(const char *dn)
 {

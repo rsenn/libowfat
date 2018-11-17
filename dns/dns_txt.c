@@ -1,8 +1,8 @@
 #include <errno.h>
-#include "stralloc.h"
-#include "uint16.h"
-#include "byte.h"
-#include "dns.h"
+#include "../stralloc.h"
+#include "../uint16.h"
+#include "../byte.h"
+#include "../dns.h"
 
 int dns_txt_packet(stralloc *out,const char *buf,unsigned int len)
 {

@@ -4,14 +4,18 @@
 #else
 #include <sys/socket.h>
 #endif
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #include <stdlib.h>
-#include "socket.h"
+#include "../socket.h"
 #include <errno.h>
-#include "byte.h"
-#include "uint16.h"
-#include "dns.h"
-#include "ip6.h"
+#include "../byte.h"
+#include "../uint16.h"
+#include "../dns.h"
+#include "../ip6.h"
 
 static int serverwantstcp(const char *buf,unsigned int len)
 {

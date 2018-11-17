@@ -1,16 +1,16 @@
 #include <sys/types.h>
+#if !(defined(_WIN32) || defined(_WIN64))
 #include <sys/param.h>
-#ifndef __MINGW32__
 #include <sys/socket.h>
 #include <netinet/in.h>
 #endif
-#include "windoze.h"
+#include "../windoze.h"
 #include <errno.h>
-#include "byte.h"
-#include "socket.h"
-#include "ip6.h"
+#include "../byte.h"
+#include "../socket.h"
+#include "../ip6.h"
 #include "haveip6.h"
-#include "ip4.h"
+#include "../ip4.h"
 #include "havescope.h"
 
 ssize_t socket_send6_flag(int s,const char *buf,size_t len,const char ip[16],uint16 port,uint32 scope_id,int flag)

@@ -1,11 +1,11 @@
 #include <sys/types.h>
+#if !(defined(_WIN32) || defined(_WIN64))
 #include <sys/param.h>
-#ifndef __MINGW32__
 #include <sys/socket.h>
 #include <netinet/in.h>
 #endif
-#include "windoze.h"
-#include "socket.h"
+#include "../windoze.h"
+#include "../socket.h"
 #include "havesl.h"
 
 ssize_t socket_recv4(int s,char *buf,size_t len,char ip[4],uint16 *port) {

@@ -1,5 +1,5 @@
 #define NO_UINT32_MACROS
-#include "uint32.h"
+#include "../uint32.h"
 
 uint32 uint32_read(const char *in) {
   return (((uint32)(unsigned char)in[3])<<24) |
