@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-#if !defined(__int64) && (defined(__CYGWIN__) || defined(__MSYS__))
+#if !defined(__int64) && (!defined(_WIN32) || defined(__CYGWIN__) || defined(__MSYS__))
 #define __int64 long long int
 #endif
 

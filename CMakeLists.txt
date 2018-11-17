@@ -370,7 +370,7 @@ foreach(H iopause select entities)
 endforeach()
 
 
-file(GLOB SOURCES array/array_*.c array/iarray_*.c buffer/buffer_*.c buffer/errmsg_*.c byte/byte_*.c case/case_*.c cdb/*.c critbit/*.c dns/*.c fmt/fmt_*.c io/io_*.c mmap/mmap_*.c mult/*.c open/*.c open/open_*.c scan/scan_*.c socket/*.c str/str_*.c stralloc/stralloc_*.c tai/tai_*.c taia/taia_*.c textcode/*.c uint/uint16_*.c uint/uint32_*.c uint/uint64_*.c unix/*.c unix/ndelay_*.c)
+file(GLOB SOURCES array/array_*.c array/iarray_*.c buffer/buffer_*.c buffer/errmsg_*.c byte/byte_*.c case/case_*.c cdb/*.c critbit/*.c dns/*.c fmt/fmt_*.c io/io*.c mmap/mmap_*.c mult/*.c open/*.c open/open_*.c scan/scan_*.c socket/*.c str/str_*.c stralloc/stralloc_*.c tai/tai_*.c taia/taia_*.c textcode/*.c uint/uint16_*.c uint/uint32_*.c uint/uint64_*.c unix/*.c unix/ndelay_*.c)
 
 set(BUILD_SHARED_LIBS ON)
 
@@ -417,11 +417,16 @@ if(NOT IMPSUFFIX)
 endif(NOT IMPSUFFIX)  
 
 foreach(T ${TARGETS})
+  if(T MATCHES "shared")
+    set(LT "DLL")
+  else(T MATCHES "shared")
+    set(LT "LIB")
+  endif(T MATCHES "shared")
   set_target_properties(${T} PROPERTIES
     OUTPUT_NAME "owfat"
-    PREFIX "${DLLPREFIX}"
-    SUFFIX "${DLLSUFFIX}"
-    DLLVERSION "${DLLVERSION}"
+    PREFIX "${${LT}PREFIX}"
+    SUFFIX "${${LT}SUFFIX}"
+    DLLVERSION "${${LT}VERSION}"
     IMPORT_PREFIX "${IMPPREFIX}"
     IMPORT_SUFFIX "${IMPSUFFIX}"
     )
