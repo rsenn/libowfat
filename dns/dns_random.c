@@ -1,4 +1,4 @@
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <io.h>
 #else
 #include <unistd.h>
@@ -49,7 +49,7 @@ void dns_random_init(const char data[128])
     uint32_unpack(tpack + 4 * i,in + 4 + i);
 
   in[8] = getpid();
-#if !(defined(_WIN32) || defined(_WIN64))
+#if !(((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__)))
   in[9] = getppid();
 #endif
   /* more space in 10 and 11, but this is probably enough */

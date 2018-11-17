@@ -1,11 +1,11 @@
 #include "../io_internal.h"
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <io.h>
 #else
 #include <unistd.h>
 #endif
 #include <sys/types.h>
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <windows.h>
 #else
 #include <sys/mman.h>
@@ -22,7 +22,7 @@ void io_close(int64 d) {
     if (e->kernelwantread) io_dontwantread_really(d,e);
     if (e->kernelwantwrite) io_dontwantwrite_really(d,e);
     if (e->mmapped) {
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
       UnmapViewOfFile(e->mmapped);
       CloseHandle(e->mh);
 #else

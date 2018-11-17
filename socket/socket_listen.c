@@ -1,6 +1,6 @@
 #include "../io_internal.h"
 #include <sys/types.h>
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <mswsock.h>
 #else
 #include <sys/socket.h>
@@ -9,7 +9,7 @@
 #include "../windoze.h"
 
 int socket_listen(int s,unsigned int backlog) {
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
   io_entry* e;
   int r = listen(s, backlog);
   if (r==-1) return winsock2errno(-1);

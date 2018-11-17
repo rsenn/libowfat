@@ -6,7 +6,7 @@
 #define _GNU_SOURCE
 #include <signal.h>
 #endif
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <windows.h>
 #include <stdio.h>
 #include <time.h>
@@ -116,7 +116,7 @@ static void handleevent(int fd,int readable,int writable,int error) {
 #endif
 
 int64 io_waituntil2(int64 milliseconds) {
-#if !(defined(_WIN32) || defined(_WIN64))
+#if !(((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__)))
   struct pollfd* p;
 #endif
   long i,j,r;
@@ -357,14 +357,14 @@ int64 io_waituntil2(int64 milliseconds) {
   }
 dopoll:
 #endif
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
   {
     DWORD numberofbytes;
     ULONG_PTR x;
     LPOVERLAPPED o;
     if (first_readable!=-1 || first_writeable!=-1) {
       fprintf(stderr,"io_waituntil2() returning immediately because first_readable(%p) or first_writeable(%p) are set\n",first_readable,first_writeable);
-      return;
+      return -1;
     }
     fprintf(stderr,"Calling GetQueuedCompletionStatus %p...",io_comport);
     if (GetQueuedCompletionStatus(io_comport,&numberofbytes,&x,&o,milliseconds==-1?INFINITE:milliseconds)) {

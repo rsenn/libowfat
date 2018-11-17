@@ -35,7 +35,7 @@ int64 io_sendfile(int64 s,int64 fd,uint64 off,uint64 n) {
 #include <sys/socket.h>
 
 int64 io_sendfile(int64 out,int64 in,uint64 off,uint64 bytes) {
-  long long r=sendfile64(out,in,off,bytes,0,0);
+  __int64 r=sendfile64(out,in,off,bytes,0,0);
   if (r==-1 && errno!=EAGAIN) r=-3;
   if (r!=bytes) {
     io_entry* e=iarray_get(&io_fds,s);
@@ -56,7 +56,7 @@ int64 io_sendfile(int64 out,int64 in,uint64 off,uint64 bytes) {
 
 int64 io_sendfile(int64 out,int64 in,uint64 off,uint64 bytes) {
   off64_t o=off;
-  long long r=sendfile64(out,in,&o,bytes);
+  __int64 r=sendfile64(out,in,&o,bytes);
   if (r==-1 && errno!=EAGAIN) r=-3;
   if (r!=bytes) {
     io_entry* e=iarray_get(&io_fds,s);
@@ -141,7 +141,7 @@ int64 io_sendfile(int64 s,int64 fd,uint64 off,uint64 n) {
 }
 #endif
 
-#elif (defined(_WIN32) || defined(_WIN64))
+#elif (((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__)))
 
 #include <windows.h>
 #include <mswsock.h>

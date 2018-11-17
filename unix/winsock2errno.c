@@ -1,4 +1,4 @@
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <winsock2.h>
 #include <errno.h>
 #include <stdio.h>

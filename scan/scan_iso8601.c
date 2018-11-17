@@ -1,12 +1,11 @@
 #define _GNU_SOURCE
-#define __deprecated__
-#include "../scan.h"
+#undef __deprecated__
 #include "../byte.h"
 #include "../case.h"
-//#include <time.h>
+#include <time.h>
 #include <stdlib.h>
 
-#if _MSC_VER <= 1500
+#if (defined(_MSC_VER) && _MSC_VER <= 1500) || defined(__BORLANDC__)
 #define _CRT_NO_TIME_T 1
 #endif
 
@@ -14,7 +13,7 @@
 extern char** environ;
 #endif
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #ifdef _CRT_NO_TIME_T
 struct timespec {
 	time_t	tv_sec;		/* seconds */
@@ -22,6 +21,7 @@ struct timespec {
 };
 #endif
 #endif
+#include "../scan.h"
 
 /* "2014-05-27T19:22:16Z" */
 size_t scan_iso8601(const char* in,struct timespec* t) {
@@ -52,13 +52,13 @@ size_t scan_iso8601(const char* in,struct timespec* t) {
   }
 
   x.tm_wday=x.tm_yday=x.tm_isdst=0;
-#if !(defined(_WIN32) || defined(_WIN64))
+#if !(((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__)))
   x.tm_gmtoff=0;
 #endif
   
 #if defined(__dietlibc__) || defined(__GLIBC__)
   t->tv_sec=timegm(&x);
-#elif (defined(_WIN32) || defined(_WIN64))
+#elif (((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__)))
   t->tv_sec=mktime(&x);
 #else
   {

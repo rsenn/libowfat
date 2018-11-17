@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <io.h>
 #else
 #include <unistd.h>
@@ -10,7 +10,7 @@
 static void freechain(iarray_page* p,size_t pagesize) {
   while (p) {
     iarray_page* n=p->next;
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
     free(p);
 #else
     munmap(p,pagesize);

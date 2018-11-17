@@ -1,7 +1,7 @@
 #include "../io_internal.h"
 #include "../windoze.h"
 #include <sys/types.h>
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <io.h>
 #else
 #include <unistd.h>
@@ -10,7 +10,7 @@
 #endif
 #include <errno.h>
 
-#if (defined(_WIN32) || defined(_WIN64))
+#if (((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__)))
 
 #define socketpair(af, sock, proto, fds) windoze_socketpair(fds, TRUE)
 /* 
@@ -28,7 +28,7 @@ windoze_socketpair(SOCKET socks[2], int make_overlapped) {
   } a;
   SOCKET listener;
   int e;
-  socklen_t addrlen = sizeof(a.inaddr);
+  int addrlen = sizeof(a.inaddr);
   DWORD flags = (make_overlapped ? WSA_FLAG_OVERLAPPED : 0);
   int reuse = 1;
 
@@ -48,7 +48,7 @@ windoze_socketpair(SOCKET socks[2], int make_overlapped) {
   a.inaddr.sin_port = 0;
 
   for(;;) {
-    if(setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, (char*)&reuse, (socklen_t)sizeof(reuse)) == -1)
+    if(setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, (char*)&reuse, sizeof(reuse)) == -1)
       break;
     if(bind(listener, &a.addr, sizeof(a.inaddr)) == SOCKET_ERROR)
       break;

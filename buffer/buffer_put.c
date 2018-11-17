@@ -1,6 +1,6 @@
 #include <string.h>
 #include "../buffer.h"
-#ifdef __x86_64__
+#if defined(__x86_64__) && defined(__GNUC__)
 #include <x86intrin.h>
 #endif
 

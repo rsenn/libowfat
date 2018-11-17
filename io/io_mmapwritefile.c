@@ -1,7 +1,8 @@
 #include "../io_internal.h"
+#include "../buffer.h"
 #include "../iob.h"
 #include <sys/types.h>
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <windows.h>
 #include <io.h>
 #else
@@ -20,8 +21,8 @@ int64 io_mmapwritefile(int64 out,int64 in,uint64 off,uint64 bytes,io_write_callb
   if (e) {
     const char* c;
     unsigned long left;
-#if defined(_WIN32) || defined(_WIN64)
-    if (!e->mh) e->mh=CreateFileMapping(in,0,PAGE_READONLY,0,0,NULL);
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
+    if (!e->mh) e->mh=CreateFileMapping((HANDLE)in,0,PAGE_READONLY,0,0,NULL);
     if (!e->mh) goto readwrite;
 #endif
     do {
@@ -29,18 +30,18 @@ int64 io_mmapwritefile(int64 out,int64 in,uint64 off,uint64 bytes,io_write_callb
 	/* did we already map the right chunk? */
 	if (off>=e->mapofs && off<e->mapofs+e->maplen)
 	  goto mapok;	/* ok; mmapped the right chunk*/
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 	UnmapViewOfFile(e->mmapped);
 #else
 	munmap(e->mmapped,e->maplen);
 #endif
       }
-      e->mapofs=off&0xffffffffffff0000ull;
+      e->mapofs=off&(unsigned __int64)0xffffffffffff0000;
       if (e->mapofs+0x10000>off+bytes)
 	e->maplen=off+bytes-e->mapofs;
       else
 	e->maplen=0x10000;
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
       if ((e->mmapped=MapViewOfFile(e->mh,FILE_MAP_READ,(DWORD)(e->mapofs>>32),
 				    (DWORD)e->mapofs,e->maplen))==0)
 #else
@@ -59,7 +60,7 @@ int64 io_mmapwritefile(int64 out,int64 in,uint64 off,uint64 bytes,io_write_callb
 	if (m<0) {
 	  io_eagain(out);
 	  if (errno!=EAGAIN) {
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 	    UnmapViewOfFile(e->mmapped);
 #else
 	    munmap(e->mmapped,e->maplen);
@@ -83,7 +84,7 @@ int64 io_mmapwritefile(int64 out,int64 in,uint64 off,uint64 bytes,io_write_callb
       }
     } while (bytes);
     if (e->mmapped) {
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
       UnmapViewOfFile(e->mmapped);
 #else
       munmap(e->mmapped,e->maplen);

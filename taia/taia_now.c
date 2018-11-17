@@ -1,6 +1,6 @@
 #include <sys/types.h>
 #include "../taia.h"
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <windows.h>
 #include <time.h>
 #else
@@ -9,15 +9,15 @@
 
 void taia_now(struct taia *t)
 {
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
   union {
     FILETIME f;
-    unsigned long long l;
+    unsigned __int64 l;
   } fnord;
   GetSystemTimeAsFileTime(&fnord.f);
   /* 64-bit value representing the number of 100-nanosecond intervals
    * since January 1, 1601 (UTC) */
-  fnord.l-=((long long)(1970-1601))*365*24*60*60;
+  fnord.l-=((__int64)(1970-1601))*365*24*60*60;
   t->sec.x=fnord.l/10000000;
   t->nano=((fnord.l+5)/10)%1000000;
   t->atto=0;

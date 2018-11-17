@@ -8,13 +8,13 @@ size_t fmt_double(char *dest, double d,int maxlen,int prec) {
   signed long e, e10;
   union {
     double d;
-    unsigned long long x;
+    unsigned __int64 x;
   } __u;
   __u.d = d;
   /* step 1: extract sign, mantissa and exponent */
   s=__u.x>>63;
   e=((__u.x>>52)&((1<<11)-1))-1023;
-/*  unsigned long long m=*x & ((1ull<<52)-1); */
+/*  unsigned __int64 m=*x & (((unsigned __int64)1<<52)-1); */
   /* step 2: exponent is base 2, compute exponent for base 10 */
   e10=1+(long)(e*0.30102999566398119802); /* log10(2) */
   /* step 3: calculate 10^e10 */

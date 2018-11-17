@@ -1,10 +1,10 @@
 #include "../fmt.h"
 
-size_t fmt_human(char* dest,unsigned long long l) {
+size_t fmt_human(char* dest,unsigned __int64 l) {
   char unit;
   size_t i;
   if (l<1000) return fmt_ulong(dest,l);
-  if (l>1000000000000ull) {
+  if (l>(unsigned __int64)1000000000000) {
     /* dang!  overflow! */
     l/=1000;
     l=(l+50000000)/100000000;

@@ -1,5 +1,5 @@
 #include "../io_internal.h"
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <io.h>
 #else
 #include <unistd.h>
@@ -24,7 +24,7 @@
 #include <sys/socket.h>
 #include <sys/devpoll.h>
 #endif
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <mswsock.h>
 #endif
 
@@ -86,7 +86,7 @@ void io_wantread_really(int64 d,io_entry* e) {
     }
   }
 #endif
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
   if (e->listened) {
     if (e->next_accept==0) e->next_accept=socket(AF_INET,SOCK_STREAM,0);
     if (e->next_accept!=-1) {

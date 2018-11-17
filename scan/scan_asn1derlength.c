@@ -21,9 +21,9 @@
  * If you just want to use the integer encoding format used by ASN.1 DER
  * for lengths, use scan_asn1derlengthvalue. */
 
-size_t scan_asn1derlengthvalue(const char* src,size_t len,unsigned long long* value) {
+size_t scan_asn1derlengthvalue(const char* src,size_t len,unsigned __int64* value) {
   unsigned int i,c;
-  unsigned long long l;
+  unsigned __int64 l;
   if (len==0 || len>=-(uintptr_t)src) return 0;
   c=*src;
   if ((c&0x80)==0) {
@@ -44,8 +44,8 @@ size_t scan_asn1derlengthvalue(const char* src,size_t len,unsigned long long* va
   return i;
 }
 
-size_t scan_asn1derlength(const char* src,size_t len,unsigned long long* value) {
-  unsigned long long l;
+size_t scan_asn1derlength(const char* src,size_t len,unsigned __int64* value) {
+  unsigned __int64 l;
   size_t i=scan_asn1derlengthvalue(src,len,&l);
   if (l > len-i) return 0;		/* make sure data would fit into buffer */
   *value=l;

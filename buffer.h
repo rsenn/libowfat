@@ -18,6 +18,10 @@ extern "C" {
 typedef ptrdiff_t ssize_t;
 #endif
 
+#if !defined(__int64) && (defined(__CYGWIN__) || defined(__MSYS__))
+#define __int64 long long int
+#endif
+
 typedef struct buffer {
   char *x;		/* actual buffer space */
   size_t p;		/* current position */
@@ -60,8 +64,11 @@ int buffer_putsflush(buffer* b,const char* x);
 
 int buffer_putm_internal(buffer*b,...);
 int buffer_putm_internal_flush(buffer*b,...);
+
+#ifndef __BORLANDC__
 #define buffer_putm(b,...) buffer_putm_internal(b,__VA_ARGS__,(char*)0)
 #define buffer_putmflush(b,...) buffer_putm_internal_flush(b,__VA_ARGS__,(char*)0)
+#endif
 
 int buffer_putspace(buffer* b);
 int buffer_putnlflush(buffer* b); /* put \n and flush */
@@ -108,8 +115,8 @@ int buffer_put8long(buffer *b,unsigned long int l);
 int buffer_putxlong(buffer *b,unsigned long int l);
 int buffer_putlong(buffer *b,signed long int l);
 
-int buffer_putlonglong(buffer* b,signed long long int l);
-int buffer_putulonglong(buffer* b,unsigned long long int l);
+int buffer_putlonglong(buffer* b,signed __int64 l);
+int buffer_putulonglong(buffer* b,unsigned __int64 l);
 
 int buffer_puterror(buffer* b);
 int buffer_puterror2(buffer* b, int errnum);

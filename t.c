@@ -460,7 +460,7 @@ int main(int argc,char* argv[]) {
     assert(imult32(0x40000000,2,&b)==0);
     assert(imult32(0x3fffffff,2,&b)==1 && b==0x7ffffffe);
 
-    assert(imult64(0x4000000000000000ll,2,&c)==0);
+    assert(imult64((__int64)0x4000000000000000,2,&c)==0);
     assert(imult64(0x3fffffffffffffffll,2,&c)==1 && c==0x7ffffffffffffffell);
   }
 #endif

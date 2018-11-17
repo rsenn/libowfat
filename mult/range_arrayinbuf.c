@@ -12,7 +12,7 @@ int range_arrayinbuf(const void* buf1,size_t len,
     if (!umult64(elements,membersize,&x)) return 0;
     alen=x;
   } else {
-    unsigned long long t=(unsigned long long)elements*membersize;
+    uint64 t=(uint64)elements*membersize;
     alen=t;			/* this strips the upper 32 bits of t */
     if (alen!=t) return 0;	/* if that changes something, we overflowed */
   }

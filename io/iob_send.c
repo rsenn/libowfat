@@ -1,5 +1,5 @@
 #include "../io_internal.h"
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 
 #include <windows.h>
 #include <mswsock.h>
@@ -77,7 +77,7 @@ int64 iob_send(int64 s,io_batch* b) {
     } else {
       e->writequeued=1;
       fprintf(stderr,"Queueing WriteFile on %p...",s);
-      if (!WriteFile(s,x[i].buf+x[i].offset,x[i].n,0,&e->ow)) {
+      if (!WriteFile((HANDLE)s,x[i].buf+x[i].offset,x[i].n,0,&e->ow)) {
 	if (GetLastError()==ERROR_IO_PENDING) {
 	  fprintf(stderr," pending.\n");
 	  e->writequeued=1;

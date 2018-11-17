@@ -48,18 +48,18 @@ int main() {
     unsigned int i;
 
     byte_zero(buf,sizeof(buf));
-    uint64_pack_big(buf,0x0102030405060708ull);
+    uint64_pack_big(buf,(unsigned __int64)0x0102030405060708);
     for (i=0; i<8; ++i) assert(buf[i]==i+1);
     uint64_unpack_big(buf,&a);
-    assert(a==0x0102030405060708ull);
-    assert(uint64_read_big(buf)==0x0102030405060708ull);
+    assert(a==(unsigned __int64)0x0102030405060708);
+    assert(uint64_read_big(buf)==(unsigned __int64)0x0102030405060708);
 
     byte_zero(buf,sizeof(buf));
-    uint64_pack(buf,0x0102030405060708ull);
+    uint64_pack(buf,(unsigned __int64)0x0102030405060708);
     for (i=0; i<8; ++i) assert(buf[7-i]==i+1);
     uint64_unpack(buf,&a);
-    assert(a==0x0102030405060708ull);
-    assert(uint64_read(buf)==0x0102030405060708ull);
+    assert(a==(unsigned __int64)0x0102030405060708);
+    assert(uint64_read(buf)==(unsigned __int64)0x0102030405060708);
   }
 
 

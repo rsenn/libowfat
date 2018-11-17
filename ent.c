@@ -1,14 +1,16 @@
+#include "scan.h"
+
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
-#include "scan.h"
 #include <assert.h>
 
 #include "scan/scan_ulong.c"
 #include "scan/scan_ulongn.c"
 #include "fmt/fmt_utf8.c"
 #include "fmt/fmt_escapecharc.c"
+#include "byte/byte_copy.c"
 
 char tmp[20];
 char tmp2[20];

@@ -1,5 +1,5 @@
 #include "../socket.h"
-#if !(defined(_WIN32) || defined(_WIN64))
+#if !(((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__)))
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/tcp.h>

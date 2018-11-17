@@ -10,7 +10,7 @@ int main() {
   double pi=M_PI;
   float fpi=pi;
 
-  unsigned long long l;
+  unsigned __int64 l;
   size_t len;
   unsigned char c;
 

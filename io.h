@@ -144,7 +144,7 @@ int64 io_mmapwritefile(int64 out,int64 in,uint64 off,uint64 bytes,io_write_callb
  * aid in debugging the state machine if a descriptor loops or so */
 unsigned int io_debugstring(int64 s,char* buf,unsigned int bufsize);
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <io.h>
 #endif
 

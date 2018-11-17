@@ -6,7 +6,7 @@
 
 int main() {
   char buf[1024];
-  long long l;
+  __int64 l;
 
   assert(fmt_longlong(0,12345)==5);
   assert(fmt_longlong(0,-12345)==6);

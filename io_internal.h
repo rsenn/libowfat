@@ -2,7 +2,7 @@
 #define my_extern extern
 #endif
 
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #define _WINSOCKAPI_
 #include <winsock2.h>
 #endif
@@ -10,7 +10,7 @@
 #include "io.h"
 #include "array.h"
 #include "iarray.h"
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include "socket.h"
 my_extern HANDLE io_comport;
 #else
@@ -51,7 +51,7 @@ typedef struct {
   unsigned int kernelwantread:1;	/* did we tell the kernel we want to read/write? */
   unsigned int kernelwantwrite:1;
   unsigned int epolladded:1;
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
   unsigned int readqueued:2;
   unsigned int writequeued:2;
   unsigned int acceptqueued:2;
@@ -65,7 +65,7 @@ typedef struct {
   void* mmapped;
   long maplen;
   uint64 mapofs;
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
   OVERLAPPED or,ow,os;	/* overlapped for read+accept, write+connect, sendfile */
   HANDLE /* fd, */ mh;
   char inbuf[8192];
@@ -100,7 +100,7 @@ my_extern enum __io_waitmode {
 #ifdef HAVE_DEVPOLL
   ,DEVPOLL
 #endif
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
   ,COMPLETIONPORT
 #endif
 } io_waitmode;

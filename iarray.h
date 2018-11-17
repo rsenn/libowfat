@@ -11,7 +11,7 @@
 
 #include "uint64.h"
 #include <stddef.h>
-#if defined(_WIN32) || defined(_WIN64)
+#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__CYGWIN__) && !defined(__MSYS__))
 #include <windows.h>
 #else
 #include <pthread.h>

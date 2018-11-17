@@ -17,7 +17,7 @@ size_t scan_uint(const char* src,unsigned int* dest) {
     if (cur>src) *dest=l;
     return (size_t)(cur-src);
   } else
-#ifndef _MSC_VER
+#if !(defined(_MSC_VER) || defined(__BORLANDC__))
 if (sizeof(unsigned int) == sizeof(unsigned long))
 #endif
 {
@@ -25,7 +25,7 @@ if (sizeof(unsigned int) == sizeof(unsigned long))
     size_t r = scan_ulong(src, &ul);
     *dest = ul;
     return r;
-#ifndef _MSC_VER
+#if !(defined(_MSC_VER) || defined(__BORLANDC__))
 } else {
     /* the C standard says that sizeof(short) <= sizeof(unsigned int) <=
      * sizeof(unsigned long); this can never happen. Provoke a compile
