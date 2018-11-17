@@ -408,6 +408,7 @@ if(CYGWIN)
   set(LIBPREFIX "lib")
   set(LIBSUFFIX ".a")
 endif(CYGWIN)
+
 if(NOT IMPPREFIX)  
   set(IMPPREFIX "lib")
 endif(NOT IMPPREFIX)  
