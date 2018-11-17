@@ -20,7 +20,11 @@ extern "C" {
 
 #if !defined(_SSIZE_T_DEFINED)
 #define _SSIZE_T_DEFINED
+#ifdef __PTRDIFF_TYPE__
+typedef __PTRDIFF_TYPE__ ssize_t;
+#else
 typedef ptrdiff_t ssize_t;
+#endif
 #endif
 
 int socket_tcp4(void);

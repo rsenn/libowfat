@@ -336,13 +336,8 @@ set_target_properties(libowfat PROPERTIES
   PREFIX "${DLLPREFIX}"
   SUFFIX "${DLLSUFFIX}"
   DLLVERSION "${DLLVERSION}"
-<<<<<<< HEAD
   IMPORT_PREFIX "${IMPPREFIX}"
   IMPORT_SUFFIX "${IMPSUFFIX}"
-=======
-  IMPORT_PREFIX "${LIBPREFIX}"
-  IMPORT_SUFFIX ".dll${LIBSUFFIX}"
->>>>>>> 6e9b7cbb3958772f76e9cc4f684f0bbae032c7f4
   )
 set_target_properties(libowfat-static PROPERTIES
   OUTPUT_NAME "owfat"
